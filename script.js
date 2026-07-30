@@ -25,18 +25,18 @@ const MAX_MODULES = 6;
 // Markets — extend this list freely, the grid is fully data-driven
 // ---------------------------------------------------------------------
 const MARKETS = [
-  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', region: '北美', recommended: true },
-  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', region: '东南亚' },
-  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', region: '北美' },
-  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', region: '南美' },
-  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', region: '大洋洲' },
-  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', region: '欧洲' },
-  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', region: '东南亚' },
-  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', region: '东南亚' },
-  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', region: '东亚' },
-  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', region: '欧洲' },
-  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', region: '中东' },
-  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', region: '北美' },
+  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', region: '北美', regionEn: 'North America', recommended: true },
+  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', region: '东南亚', regionEn: 'Southeast Asia' },
+  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', region: '北美', regionEn: 'North America' },
+  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', region: '南美', regionEn: 'South America' },
+  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', region: '大洋洲', regionEn: 'Oceania' },
+  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', region: '欧洲', regionEn: 'Europe' },
+  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', region: '东南亚', regionEn: 'Southeast Asia' },
+  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', region: '东南亚', regionEn: 'Southeast Asia' },
+  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', region: '东亚', regionEn: 'East Asia' },
+  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', region: '欧洲', regionEn: 'Europe' },
+  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', region: '中东', regionEn: 'Middle East' },
+  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', region: '北美', regionEn: 'North America' },
 ];
 
 // ---------------------------------------------------------------------
@@ -64,6 +64,8 @@ const I18N = {
     noProjects: '还没有项目 — 上面生成一个试试',
     selectMarketFirst: '请先选择目标市场',
     overLimit: '超过 6 个模块，需要人工评估',
+    deleteProject: '删除项目',
+    confirmDelete: '确定要删除这个项目吗？',
     bedroomStd: '标准卧室',
     bedroomMaster: '主卧',
     bathroomStd: '卫浴',
@@ -93,6 +95,8 @@ const I18N = {
     noProjects: 'No projects yet — generate one above',
     selectMarketFirst: 'Pick a target market first',
     overLimit: 'Over the 6-module limit — needs engineer review',
+    deleteProject: 'Delete project',
+    confirmDelete: 'Delete this project?',
     bedroomStd: 'Standard bedroom',
     bedroomMaster: 'Master bedroom',
     bathroomStd: 'Bathroom',
@@ -138,7 +142,7 @@ function renderMarkets() {
     card.className = 'market-card' + (selectedMarket === market.code ? ' selected' : '');
     card.innerHTML = `
       ${market.recommended ? `<span class="market-badge">${t('recommended')}</span>` : ''}
-      <span class="market-region">${market.region}</span>
+      <span class="market-region">${currentLang === 'zh' ? market.region : market.regionEn}</span>
       <span class="market-flag">${market.flag}</span>
       <span class="market-name-zh">${currentLang === 'zh' ? market.zh : market.en}</span>
       <span class="market-name-en">${currentLang === 'zh' ? market.en : market.zh}</span>
@@ -256,8 +260,14 @@ function loadProjects() {
 }
 function saveProject(project) {
   const list = loadProjects();
-  list.unshift(project);
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  list.unshift({ id, ...project });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0, 12)));
+}
+function deleteProject(id) {
+  const list = loadProjects().filter((p) => p.id !== id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  renderProjects();
 }
 function renderProjects() {
   const grid = document.getElementById('projectGrid');
@@ -273,10 +283,18 @@ function renderProjects() {
     const market = MARKETS.find((m) => m.code === p.market);
     const marketName = market ? (currentLang === 'zh' ? market.zh : market.en) : p.market;
     card.innerHTML = `
-      <div class="project-card-title">${market ? market.flag + ' ' : ''}${marketName}</div>
+      <div class="project-card-top">
+        <div class="project-card-title">${market ? market.flag + ' ' : ''}${marketName}</div>
+        <button class="project-delete-btn" data-id="${p.id}" type="button" aria-label="${t('deleteProject')}">&times;</button>
+      </div>
       <div class="project-card-meta">${p.moduleCount} ${t('modulesLabel')} · ${new Date(p.date).toLocaleDateString()}</div>
     `;
     grid.appendChild(card);
+  });
+  grid.querySelectorAll('.project-delete-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (confirm(t('confirmDelete'))) deleteProject(btn.getAttribute('data-id'));
+    });
   });
 }
 
