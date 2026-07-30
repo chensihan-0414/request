@@ -5,7 +5,7 @@
 // empty, the site still works fully on its own — it just shows the
 // generated JSON inline instead of a continue link.
 // ---------------------------------------------------------------------
-const STEP2_URL = 'https://editor-editor-x1c5.vercel.app/step1';
+const STEP2_URL = 'https://editor-editor-sooty.vercel.app/step1';
 
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
