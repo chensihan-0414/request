@@ -19,8 +19,8 @@
   --glass-bg-strong: rgba(255, 255, 255, 0.13);
   --glass-border: rgba(255, 255, 255, 0.18);
 
-  --font-display: "Bricolage Grotesque", -apple-system, sans-serif;
-  --font-sans: "General Sans", -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Unbounded", -apple-system, sans-serif;
+  --font-sans: "Onest", -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", monospace;
 }
 
@@ -82,6 +82,13 @@ body {
   font-size: 17px;
 }
 .brand-name { font-weight: 600; font-size: 16px; letter-spacing: 0.01em; color: var(--ink); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a {
+  color: var(--ink-soft); font-size: 14px; font-weight: 500;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.nav-links a:hover { color: var(--emerald); }
 .lang-switch { display: flex; border: 1px solid var(--glass-border); border-radius: 999px; overflow: hidden; }
 .lang-btn {
   border: none; background: transparent; color: var(--ink-soft);
@@ -292,6 +299,10 @@ section { margin-top: 88px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
   html { scroll-behavior: auto; }
+}
+
+@media (max-width: 720px) {
+  .nav-links { display: none; }
 }
 
 @media (max-width: 560px) {
