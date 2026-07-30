@@ -328,4 +328,4 @@ document.querySelectorAll('.lang-btn').forEach((btn) => {
   btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));
 });
 
-applyLanguage('zh');
+applyLanguage('en');

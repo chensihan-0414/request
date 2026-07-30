@@ -1,34 +1,34 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>定制预制房 · Custom Prefab House</title>
+<title>Custom Prefab House · Go Global</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="brand">
-    <span class="brand-mark">宅</span>
-    <span class="brand-name" data-i18n="brandName">定制预制房</span>
+    <span class="brand-mark">H</span>
+    <span class="brand-name" data-i18n="brandName">Custom Prefab House</span>
   </div>
   <div class="lang-switch" id="langSwitch">
-    <button class="lang-btn active" data-lang="zh" type="button">中文</button>
-    <button class="lang-btn" data-lang="en" type="button">EN</button>
+    <button class="lang-btn" data-lang="zh" type="button">中文</button>
+    <button class="lang-btn active" data-lang="en" type="button">EN</button>
   </div>
 </header>
 
 <main>
   <section class="hero">
     <p class="eyebrow" data-i18n="eyebrow">AI-POWERED PREFAB WORKSPACE</p>
-    <h1 data-i18n="heroTitle">定制预制房 · 启航全球</h1>
-    <p class="subtitle" data-i18n="heroSubtitle">选择目标市场，搭建你的房型，几分钟看到立体效果。</p>
+    <h1 data-i18n="heroTitle">Custom Prefab · Go Global</h1>
+    <p class="subtitle" data-i18n="heroSubtitle">Pick a target market, build your layout, see a 3D result in minutes.</p>
   </section>
 
   <section class="positioning">
     <div class="section-head">
-      <h2 data-i18n="positioningLabel">目标市场 · 客户定位</h2>
+      <h2 data-i18n="positioningLabel">Target market · positioning</h2>
       <p class="section-hint" data-i18n="positioningHint">PRIORITY MARKETS</p>
     </div>
     <div class="market-grid" id="marketGrid"></div>
@@ -36,37 +36,37 @@
 
   <section class="quick-start" id="quickStart">
     <div class="section-head">
-      <h2 data-i18n="quickStartLabel">快速开始</h2>
-      <p class="section-hint" data-i18n="quickStartHint">勾选你需要的房间，最多 6 个模块</p>
+      <h2 data-i18n="quickStartLabel">Quick start</h2>
+      <p class="section-hint" data-i18n="quickStartHint">Check the rooms you need — up to 6 modules</p>
     </div>
 
     <div class="module-counter">
       <span id="moduleCount">0</span><span class="counter-sep">/</span>6
-      <span class="counter-label" data-i18n="modulesLabel">个模块</span>
+      <span class="counter-label" data-i18n="modulesLabel">modules</span>
     </div>
 
     <div class="module-form" id="moduleForm"></div>
 
     <div class="submit-row">
-      <button class="submit-btn" id="submitBtn" type="button" data-i18n="generateBtn">生成方案</button>
+      <button class="submit-btn" id="submitBtn" type="button" data-i18n="generateBtn">Generate</button>
       <span class="selected-market" id="selectedMarketLabel"></span>
     </div>
 
     <div class="result-panel" id="resultPanel" hidden>
       <div class="result-head">
-        <h3 data-i18n="resultLabel">生成结果</h3>
-        <button class="copy-btn" id="copyBtn" type="button" data-i18n="copyBtn">复制 JSON</button>
+        <h3 data-i18n="resultLabel">Result</h3>
+        <button class="copy-btn" id="copyBtn" type="button" data-i18n="copyBtn">Copy JSON</button>
       </div>
       <pre id="resultJson"></pre>
       <div id="continueRow" class="continue-row" hidden>
-        <a id="continueLink" class="continue-btn" href="#" data-i18n="continueBtn">继续搭建 →</a>
+        <a id="continueLink" class="continue-btn" href="#" data-i18n="continueBtn">Continue building →</a>
       </div>
     </div>
   </section>
 
   <section class="recent-projects">
     <div class="section-head">
-      <h2 data-i18n="recentLabel">最近项目</h2>
+      <h2 data-i18n="recentLabel">Recent projects</h2>
       <p class="section-hint" data-i18n="recentHint">SAVED IN THIS BROWSER</p>
     </div>
     <div class="project-grid" id="projectGrid"></div>
@@ -74,7 +74,7 @@
 </main>
 
 <footer class="site-footer">
-  <p data-i18n="footerNote">生成结果仅供方案预览，具体尺寸以工厂确认为准。</p>
+  <p data-i18n="footerNote">Generated results are a preview only — final dimensions pending factory confirmation.</p>
 </footer>
 
 <script src="script.js"></script>
