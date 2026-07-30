@@ -5,7 +5,7 @@
 // empty, the site still works fully on its own — it just shows the
 // generated JSON inline instead of a continue link.
 // ---------------------------------------------------------------------
-const STEP2_URL = ''; // e.g. 'https://your-pascal-fork.vercel.app/step1'
+const STEP2_URL = 'https://editor-editor-x1c5.vercel.app/step1';
 
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
@@ -350,6 +350,19 @@ document.getElementById('copyBtn').addEventListener('click', () => {
 });
 document.querySelectorAll('.lang-btn').forEach((btn) => {
   btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));
+});
+
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+menuToggle.addEventListener('click', () => {
+  const isOpen = mobileMenu.classList.toggle('open');
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+});
+mobileMenu.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  });
 });
 
 applyLanguage('en');
