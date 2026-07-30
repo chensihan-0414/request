@@ -40,7 +40,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: url('assets/earth-bg.jpg') center 32% / cover no-repeat, var(--space-black);
+  background: url('earth-bg.jpg') center 32% / cover no-repeat, var(--space-black);
 }
 .bg-layer::after {
   content: "";
