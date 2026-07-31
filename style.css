@@ -185,7 +185,7 @@ section { margin-top: 88px; }
 .section-hint { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
 
 /* Glass panel base — shared visual language for every card */
-.market-card,
+.style-group,
 .module-row,
 .result-panel,
 .project-card,
@@ -196,30 +196,48 @@ section { margin-top: 88px; }
   border: 1px solid var(--glass-border);
 }
 
-/* Market cards */
-.market-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 16px;
+/* Style groups (accordion) */
+.market-grid { display: flex; flex-direction: column; gap: 14px; }
+.style-group { border-radius: 18px; overflow: hidden; }
+.style-header { display: flex; align-items: center; gap: 12px; padding: 18px 20px; }
+.style-toggle {
+  flex: 1; display: flex; align-items: center; gap: 14px;
+  background: none; border: none; cursor: pointer; text-align: left; padding: 0;
 }
+.style-chevron {
+  flex-shrink: 0; font-size: 13px; color: var(--ink-faint);
+  transition: transform 0.18s ease;
+}
+.style-group.open .style-chevron { transform: rotate(90deg); }
+.style-text { display: flex; flex-direction: column; gap: 3px; }
+.style-title { font-weight: 700; font-size: 17px; color: var(--ink); }
+.style-desc { font-size: 13px; color: var(--ink-soft); }
+.style-recommend-btn {
+  flex-shrink: 0; padding: 9px 16px; border-radius: 10px; border: 1px solid var(--emerald);
+  background: transparent; color: var(--emerald); font-weight: 600; font-size: 13px;
+  cursor: pointer; transition: background 0.15s ease, color 0.15s ease;
+}
+.style-recommend-btn:hover { background: var(--emerald); color: var(--space-black); }
+.style-body {
+  display: none;
+  flex-wrap: wrap; gap: 10px;
+  padding: 0 20px 20px;
+}
+.style-group.open .style-body { display: flex; }
 .market-card {
-  position: relative;
-  border-radius: 18px;
-  padding: 26px 22px;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
-  text-align: left;
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 12px; padding: 10px 16px;
+  cursor: pointer; border: 1px solid var(--glass-border); background: var(--glass-bg-strong);
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
-.market-card:hover { border-color: rgba(47, 191, 113, 0.5); transform: translateY(-2px); }
+.market-card:hover { border-color: rgba(47, 191, 113, 0.5); }
 .market-card.selected { border-color: var(--emerald); background: var(--emerald-tint); }
-.market-flag { font-size: 34px; margin-bottom: 14px; display: block; }
-.market-name-zh { font-weight: 700; font-size: 17px; color: var(--ink); }
-.market-name-en { font-size: 13px; color: var(--ink-soft); margin-top: 3px; }
-.market-region { position: absolute; top: 18px; right: 18px; font-size: 11px; color: var(--ink-faint); }
-.market-badge {
-  position: absolute; top: -1px; left: 18px;
-  background: var(--emerald); color: var(--forest-deep);
-  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 0 0 8px 8px;
+.market-flag { font-size: 18px; }
+.market-name-zh { font-weight: 600; font-size: 14px; color: var(--ink); }
+
+@media (max-width: 560px) {
+  .style-header { flex-wrap: wrap; }
+  .style-recommend-btn { width: 100%; }
 }
 
 /* Quick start */

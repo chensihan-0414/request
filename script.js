@@ -25,43 +25,59 @@ const MAX_MODULES = 6;
 // Markets — extend this list freely, the grid is fully data-driven
 // ---------------------------------------------------------------------
 const MARKETS = [
-  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', region: '北美', regionEn: 'North America', recommended: true,
-    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
-      note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } } },
-  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', region: '东南亚', regionEn: 'Southeast Asia',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '土地紧张，紧凑户型为主，带顶门廊应对热带气候', en: 'Land is tight, so compact layouts dominate; a covered porch suits the tropical climate' } } },
-  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', region: '北美', regionEn: 'North America',
-    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
-      note: { zh: '跟美国类似，家庭型开放式布局是主流', en: 'Similar to the US — open family-style layouts are standard' } } },
-  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', region: '南美', regionEn: 'South America',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '气候温暖，室内外连通的门廊很受欢迎', en: 'Warm climate favors indoor-outdoor connection via a covered porch' } } },
-  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', region: '大洋洲', regionEn: 'Oceania',
-    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '室内外生活方式是当地设计重点，门廊+主卧套间组合常见', en: 'Indoor-outdoor living is a local design priority — porch + primary suite is common' } } },
-  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', region: '欧洲', regionEn: 'Europe',
-    starter: { modules: [{ id: 'bedroom-std', qty: 2 }, { id: 'bathroom-std', qty: 1 }, { id: 'living-room', qty: 1 }, { id: 'storage-loft', qty: 1 }],
-      note: { zh: '户型偏紧凑，注重收纳空间', en: 'Compact layouts with an emphasis on built-in storage' } } },
-  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', region: '东南亚', regionEn: 'Southeast Asia',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '热带气候，紧凑户型+门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } } },
-  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', region: '东南亚', regionEn: 'Southeast Asia',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '热带气候，紧凑户型+门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } } },
-  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', region: '东亚', regionEn: 'East Asia',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
-      note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } } },
-  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', region: '欧洲', regionEn: 'Europe',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
-      note: { zh: '注重能效和空间利用效率', en: 'Strong focus on energy efficiency and organized space' } } },
-  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', region: '中东', regionEn: 'Middle East',
-    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
-      note: { zh: '预制房增速最快的地区之一，偏好更宽敞的主卧套间', en: 'One of the fastest-growing prefab markets — favors a more spacious primary suite' } } },
-  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', region: '北美', regionEn: 'North America',
-    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
-      note: { zh: '气候温暖，室内外连通的门廊很受欢迎', en: 'Warm climate favors indoor-outdoor connection via a covered porch' } } },
+  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', styleId: 'modern-open' },
+  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', styleId: 'modern-open' },
+  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', styleId: 'tropical' },
+  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', styleId: 'tropical' },
+  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', styleId: 'tropical' },
+  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', styleId: 'tropical' },
+  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', styleId: 'tropical' },
+  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', styleId: 'tropical' },
+  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', styleId: 'japanese' },
+  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', styleId: 'euro-storage' },
+  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', styleId: 'euro-storage' },
+  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', styleId: 'luxury' },
 ];
+
+const STYLES = [
+  {
+    id: 'modern-open',
+    zh: '现代开放简约', en: 'Modern Open Minimalist',
+    desc: { zh: '开放式厨房+客厅是核心，暖白墙面配浅木色', en: 'Open kitchen-to-living core, warm white walls with light wood tones' },
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
+      note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } },
+  },
+  {
+    id: 'tropical',
+    zh: '热带度假风', en: 'Tropical Resort',
+    desc: { zh: '室内外连通，门廊是第二客厅，藤编+浅木质感', en: 'Indoor-outdoor connection, porch as a second living space, rattan and light wood' },
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '热带气候，紧凑户型+带顶门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } },
+  },
+  {
+    id: 'japanese',
+    zh: '日式精工极简', en: 'Japanese Precision Minimalist',
+    desc: { zh: '高定制、低饱和度木色，收纳优先于外露家具', en: 'Highly customized, muted wood tones, built-in storage over exposed furniture' },
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
+      note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } },
+  },
+  {
+    id: 'euro-storage',
+    zh: '欧式高效收纳', en: 'European Efficient Storage',
+    desc: { zh: '紧凑户型+强收纳系统，冷色中性调', en: 'Compact layout with strong storage systems, cool neutral tones' },
+    starter: { modules: [{ id: 'bedroom-std', qty: 2 }, { id: 'bathroom-std', qty: 1 }, { id: 'living-room', qty: 1 }, { id: 'storage-loft', qty: 1 }],
+      note: { zh: '户型偏紧凑，注重能效和收纳空间', en: 'Compact layouts with a focus on energy efficiency and storage' } },
+  },
+  {
+    id: 'luxury',
+    zh: '现代奢华', en: 'Modern Luxury',
+    desc: { zh: '深色木质+金属点缀，主卧套间尺度更大', en: 'Dark wood with metallic accents, a more generous primary suite' },
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
+      note: { zh: '预制房增速最快的地区之一，偏好更宽敞的主卧套间', en: 'One of the fastest-growing prefab markets — favors a more spacious primary suite' } },
+  },
+];
+
+let expandedStyles = new Set([STYLES[0].id]);
 
 // ---------------------------------------------------------------------
 // i18n
@@ -174,25 +190,63 @@ function applyLanguage(lang) {
 function renderMarkets() {
   const grid = document.getElementById('marketGrid');
   grid.innerHTML = '';
-  MARKETS.forEach((market) => {
-    const card = document.createElement('button');
-    card.type = 'button';
-    card.className = 'market-card' + (selectedMarket === market.code ? ' selected' : '');
-    card.innerHTML = `
-      ${market.recommended ? `<span class="market-badge">${t('recommended')}</span>` : ''}
-      <span class="market-region">${currentLang === 'zh' ? market.region : market.regionEn}</span>
-      <span class="market-flag">${market.flag}</span>
-      <span class="market-name-zh">${currentLang === 'zh' ? market.zh : market.en}</span>
-      <span class="market-name-en">${currentLang === 'zh' ? market.en : market.zh}</span>
+  STYLES.forEach((style) => {
+    const marketsInStyle = MARKETS.filter((m) => m.styleId === style.id);
+    const isOpen = expandedStyles.has(style.id);
+
+    const group = document.createElement('div');
+    group.className = 'style-group' + (isOpen ? ' open' : '');
+
+    const header = document.createElement('div');
+    header.className = 'style-header';
+    header.innerHTML = `
+      <button type="button" class="style-toggle">
+        <span class="style-chevron">▸</span>
+        <span class="style-text">
+          <span class="style-title">${currentLang === 'zh' ? style.zh : style.en}</span>
+          <span class="style-desc">${style.desc[currentLang]}</span>
+        </span>
+      </button>
+      <button type="button" class="style-recommend-btn">${t('recommendApply')}</button>
     `;
-    card.addEventListener('click', () => {
-      selectedMarket = market.code;
+    header.querySelector('.style-toggle').addEventListener('click', () => {
+      if (expandedStyles.has(style.id)) expandedStyles.delete(style.id);
+      else expandedStyles.add(style.id);
+      renderMarkets();
+    });
+    header.querySelector('.style-recommend-btn').addEventListener('click', () => {
+      selectedMarket = marketsInStyle[0].code;
+      expandedStyles.add(style.id);
+      applyRecommendation();
       renderMarkets();
       updateSelectedMarketLabel();
       updateRecommendCard();
       document.getElementById('quickStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
-    grid.appendChild(card);
+    group.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'style-body';
+    marketsInStyle.forEach((market) => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'market-card' + (selectedMarket === market.code ? ' selected' : '');
+      card.innerHTML = `
+        <span class="market-flag">${market.flag}</span>
+        <span class="market-name-zh">${currentLang === 'zh' ? market.zh : market.en}</span>
+      `;
+      card.addEventListener('click', () => {
+        selectedMarket = market.code;
+        renderMarkets();
+        updateSelectedMarketLabel();
+        updateRecommendCard();
+        document.getElementById('quickStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      body.appendChild(card);
+    });
+    group.appendChild(body);
+
+    grid.appendChild(group);
   });
 }
 
@@ -206,16 +260,18 @@ function updateSelectedMarketLabel() {
 function updateRecommendCard() {
   const card = document.getElementById('recommendCard');
   const market = MARKETS.find((m) => m.code === selectedMarket);
-  if (!market || !market.starter) { card.hidden = true; return; }
-  document.getElementById('recommendNote').textContent = market.starter.note[currentLang];
+  const style = market && STYLES.find((s) => s.id === market.styleId);
+  if (!style) { card.hidden = true; return; }
+  document.getElementById('recommendNote').textContent = style.starter.note[currentLang];
   card.hidden = false;
 }
 
 function applyRecommendation() {
   const market = MARKETS.find((m) => m.code === selectedMarket);
-  if (!market || !market.starter) return;
+  const style = market && STYLES.find((s) => s.id === market.styleId);
+  if (!style) return;
   MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
-  market.starter.modules.forEach(({ id, qty }) => { moduleState[id] = qty; });
+  style.starter.modules.forEach(({ id, qty }) => { moduleState[id] = qty; });
   renderModuleForm();
 }
 
