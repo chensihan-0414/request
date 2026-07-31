@@ -117,7 +117,6 @@ const I18N = {
     modalDone: '好的',
     quickStartLabel: '⚡ 快速开始',
     quickStartHint: '勾选你需要的房间，最多 6 个模块，几秒钟出效果',
-    furnishToggleLabel: '自动摆放家具',
     recommendTitle: '本地区推荐配置',
     recommendApply: '一键套用',
     recommendViewBtn: '查看详情',
@@ -172,7 +171,6 @@ const I18N = {
     modalDone: 'Done',
     quickStartLabel: '⚡ Quick start',
     quickStartHint: 'Check the rooms you need — up to 6 modules, results in seconds',
-    furnishToggleLabel: 'Auto-furnish rooms',
     recommendTitle: 'Recommended for this market',
     recommendApply: 'Use this',
     recommendViewBtn: 'View details',
@@ -202,7 +200,6 @@ const I18N = {
 
 let currentLang = 'zh';
 let selectedMarket = null;
-let autoFurnish = true;
 const moduleState = {}; // moduleId -> quantity (0 or 1 for toggles)
 MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
 
@@ -583,10 +580,6 @@ document.getElementById('customModalClose').addEventListener('click', closeCusto
 document.getElementById('customModalDone').addEventListener('click', closeCustomModal);
 document.getElementById('customModalOverlay').addEventListener('click', (e) => {
   if (e.target.id === 'customModalOverlay') closeCustomModal();
-});
-document.getElementById('furnishToggle').addEventListener('click', (e) => {
-  autoFurnish = !autoFurnish;
-  e.currentTarget.classList.toggle('on', autoFurnish);
 });
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('resultJson').textContent);
