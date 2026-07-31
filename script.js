@@ -1,12 +1,6 @@
 // ---------------------------------------------------------------------
-// Config — set this once Step 2 (the Pascal editor fork) is deployed.
-// When set, "Generate" also shows a "Continue building →" link that
-// hands the structured request off via a URL query param. When left
-// empty, the site still works fully on its own — it just shows the
-// generated JSON inline instead of a continue link.
+// Config
 // ---------------------------------------------------------------------
-const STEP2_URL = 'https://editor-editor-sooty.vercel.app/step1';
-
 // "Continue building" jumps straight into the finished Pascal editor scene
 // (a shared, already-furnished showcase house) rather than through the
 // per-request auto-build flow above — visitors can freely edit it without
@@ -126,7 +120,7 @@ const I18N = {
     furnishToggleLabel: '自动摆放家具',
     recommendTitle: '本地区推荐配置',
     recommendApply: '一键套用',
-    recommendViewBtn: '查看详情 →',
+    recommendViewBtn: '查看详情',
     modulesLabel: '个模块',
     generateBtn: '生成方案',
     resultLabel: '生成结果',
@@ -181,7 +175,7 @@ const I18N = {
     furnishToggleLabel: 'Auto-furnish rooms',
     recommendTitle: 'Recommended for this market',
     recommendApply: 'Use this',
-    recommendViewBtn: 'View details →',
+    recommendViewBtn: 'View details',
     modulesLabel: 'modules',
     generateBtn: 'Generate',
     resultLabel: 'Result',
@@ -335,16 +329,6 @@ function applyRecommendation() {
     document.getElementById('recommendPhoto').src = style.photo;
     document.getElementById('recommendPhoto').alt = currentLang === 'zh' ? style.zh : style.en;
     document.getElementById('recommendPhotoWrap').hidden = false;
-
-    const viewBtn = document.getElementById('recommendViewBtn');
-    if (STEP2_URL) {
-      const { requests } = buildModuleRequest();
-      const query = encodeURIComponent(JSON.stringify({ market: selectedMarket, modules: requests, furnish: autoFurnish }));
-      viewBtn.href = `${STEP2_URL}?data=${query}`;
-      viewBtn.hidden = false;
-    } else {
-      viewBtn.hidden = true;
-    }
   }
 }
 
