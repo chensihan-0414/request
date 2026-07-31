@@ -7,6 +7,12 @@
 // ---------------------------------------------------------------------
 const STEP2_URL = 'https://editor-editor-sooty.vercel.app/step1';
 
+// "Continue building" jumps straight into the finished Pascal editor scene
+// (a shared, already-furnished showcase house) rather than through the
+// per-request auto-build flow above — visitors can freely edit it without
+// touching the original.
+const CONTINUE_BUILDING_URL = 'https://editor-five-mocha.vercel.app/scene/b9bc64ce220f';
+
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
 // ---------------------------------------------------------------------
@@ -502,13 +508,8 @@ function handleSubmit() {
   saveProject({ market: selectedMarket, moduleCount: finalTotal, date: Date.now(), requests });
   renderProjects();
 
-  if (STEP2_URL) {
-    const query = encodeURIComponent(JSON.stringify({ market: selectedMarket, modules: requests, furnish: autoFurnish }));
-    document.getElementById('continueLink').href = `${STEP2_URL}?data=${query}`;
-    continueRow.hidden = false;
-  } else {
-    continueRow.hidden = true;
-  }
+  document.getElementById('continueLink').href = CONTINUE_BUILDING_URL;
+  continueRow.hidden = false;
 
   resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
