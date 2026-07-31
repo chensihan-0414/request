@@ -1,5 +1,11 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Any element using the plain `hidden` attribute must actually hide,
+   even if its class also sets an explicit `display` value elsewhere
+   (a class rule and [hidden] have equal specificity, so without this,
+   the class's `display` wins and the element shows anyway). */
+[hidden] { display: none !important; }
+
 :root {
   --space-black: #05080A;
   --forest: #0C1F16;
