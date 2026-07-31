@@ -25,18 +25,42 @@ const MAX_MODULES = 6;
 // Markets — extend this list freely, the grid is fully data-driven
 // ---------------------------------------------------------------------
 const MARKETS = [
-  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', region: '北美', regionEn: 'North America', recommended: true },
-  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', region: '东南亚', regionEn: 'Southeast Asia' },
-  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', region: '北美', regionEn: 'North America' },
-  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', region: '南美', regionEn: 'South America' },
-  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', region: '大洋洲', regionEn: 'Oceania' },
-  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', region: '欧洲', regionEn: 'Europe' },
-  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', region: '东南亚', regionEn: 'Southeast Asia' },
-  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', region: '东南亚', regionEn: 'Southeast Asia' },
-  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', region: '东亚', regionEn: 'East Asia' },
-  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', region: '欧洲', regionEn: 'Europe' },
-  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', region: '中东', regionEn: 'Middle East' },
-  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', region: '北美', regionEn: 'North America' },
+  { code: 'us', flag: '🇺🇸', zh: '美国', en: 'United States', region: '北美', regionEn: 'North America', recommended: true,
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
+      note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } } },
+  { code: 'sg', flag: '🇸🇬', zh: '新加坡', en: 'Singapore', region: '东南亚', regionEn: 'Southeast Asia',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '土地紧张，紧凑户型为主，带顶门廊应对热带气候', en: 'Land is tight, so compact layouts dominate; a covered porch suits the tropical climate' } } },
+  { code: 'ca', flag: '🇨🇦', zh: '加拿大', en: 'Canada', region: '北美', regionEn: 'North America',
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
+      note: { zh: '跟美国类似，家庭型开放式布局是主流', en: 'Similar to the US — open family-style layouts are standard' } } },
+  { code: 'br', flag: '🇧🇷', zh: '巴西', en: 'Brazil', region: '南美', regionEn: 'South America',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '气候温暖，室内外连通的门廊很受欢迎', en: 'Warm climate favors indoor-outdoor connection via a covered porch' } } },
+  { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', region: '大洋洲', regionEn: 'Oceania',
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '室内外生活方式是当地设计重点，门廊+主卧套间组合常见', en: 'Indoor-outdoor living is a local design priority — porch + primary suite is common' } } },
+  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', region: '欧洲', regionEn: 'Europe',
+    starter: { modules: [{ id: 'bedroom-std', qty: 2 }, { id: 'bathroom-std', qty: 1 }, { id: 'living-room', qty: 1 }, { id: 'storage-loft', qty: 1 }],
+      note: { zh: '户型偏紧凑，注重收纳空间', en: 'Compact layouts with an emphasis on built-in storage' } } },
+  { code: 'my', flag: '🇲🇾', zh: '马来西亚', en: 'Malaysia', region: '东南亚', regionEn: 'Southeast Asia',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '热带气候，紧凑户型+门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } } },
+  { code: 'th', flag: '🇹🇭', zh: '泰国', en: 'Thailand', region: '东南亚', regionEn: 'Southeast Asia',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '热带气候，紧凑户型+门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } } },
+  { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', region: '东亚', regionEn: 'East Asia',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
+      note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } } },
+  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', region: '欧洲', regionEn: 'Europe',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
+      note: { zh: '注重能效和空间利用效率', en: 'Strong focus on energy efficiency and organized space' } } },
+  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', region: '中东', regionEn: 'Middle East',
+    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
+      note: { zh: '预制房增速最快的地区之一，偏好更宽敞的主卧套间', en: 'One of the fastest-growing prefab markets — favors a more spacious primary suite' } } },
+  { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', region: '北美', regionEn: 'North America',
+    starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
+      note: { zh: '气候温暖，室内外连通的门廊很受欢迎', en: 'Warm climate favors indoor-outdoor connection via a covered porch' } } },
 ];
 
 // ---------------------------------------------------------------------
@@ -55,6 +79,9 @@ const I18N = {
     navRecent: '最近项目',
     quickStartLabel: '快速开始',
     quickStartHint: '勾选你需要的房间，最多 6 个模块',
+    furnishToggleLabel: '自动摆放家具',
+    recommendTitle: '本地区推荐配置',
+    recommendApply: '一键套用',
     modulesLabel: '个模块',
     generateBtn: '生成方案',
     resultLabel: '生成结果',
@@ -89,6 +116,9 @@ const I18N = {
     navRecent: 'Recent Projects',
     quickStartLabel: 'Quick start',
     quickStartHint: 'Check the rooms you need — up to 6 modules',
+    furnishToggleLabel: 'Auto-furnish rooms',
+    recommendTitle: 'Recommended for this market',
+    recommendApply: 'Use this',
     modulesLabel: 'modules',
     generateBtn: 'Generate',
     resultLabel: 'Result',
@@ -115,6 +145,7 @@ const I18N = {
 
 let currentLang = 'zh';
 let selectedMarket = null;
+let autoFurnish = true;
 const moduleState = {}; // moduleId -> quantity (0 or 1 for toggles)
 MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
 
@@ -134,6 +165,7 @@ function applyLanguage(lang) {
   renderModuleForm();
   renderProjects();
   updateSelectedMarketLabel();
+  updateRecommendCard();
 }
 
 // ---------------------------------------------------------------------
@@ -157,6 +189,7 @@ function renderMarkets() {
       selectedMarket = market.code;
       renderMarkets();
       updateSelectedMarketLabel();
+      updateRecommendCard();
       document.getElementById('quickStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     grid.appendChild(card);
@@ -168,6 +201,22 @@ function updateSelectedMarketLabel() {
   if (!selectedMarket) { label.textContent = ''; return; }
   const market = MARKETS.find((m) => m.code === selectedMarket);
   label.textContent = (currentLang === 'zh' ? market.zh : market.en);
+}
+
+function updateRecommendCard() {
+  const card = document.getElementById('recommendCard');
+  const market = MARKETS.find((m) => m.code === selectedMarket);
+  if (!market || !market.starter) { card.hidden = true; return; }
+  document.getElementById('recommendNote').textContent = market.starter.note[currentLang];
+  card.hidden = false;
+}
+
+function applyRecommendation() {
+  const market = MARKETS.find((m) => m.code === selectedMarket);
+  if (!market || !market.starter) return;
+  MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
+  market.starter.modules.forEach(({ id, qty }) => { moduleState[id] = qty; });
+  renderModuleForm();
 }
 
 // ---------------------------------------------------------------------
@@ -331,7 +380,7 @@ function handleSubmit() {
   renderProjects();
 
   if (STEP2_URL) {
-    const query = encodeURIComponent(JSON.stringify({ market: selectedMarket, modules: requests }));
+    const query = encodeURIComponent(JSON.stringify({ market: selectedMarket, modules: requests, furnish: autoFurnish }));
     document.getElementById('continueLink').href = `${STEP2_URL}?data=${query}`;
     continueRow.hidden = false;
   } else {
@@ -345,6 +394,11 @@ function handleSubmit() {
 // Init
 // ---------------------------------------------------------------------
 document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+document.getElementById('recommendBtn').addEventListener('click', applyRecommendation);
+document.getElementById('furnishToggle').addEventListener('click', (e) => {
+  autoFurnish = !autoFurnish;
+  e.currentTarget.classList.toggle('on', autoFurnish);
+});
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('resultJson').textContent);
 });
