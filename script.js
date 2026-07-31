@@ -44,6 +44,7 @@ const STYLES = [
     id: 'modern-open',
     zh: '现代开放简约', en: 'Modern Open Minimalist',
     desc: { zh: '开放式厨房+客厅是核心，暖白墙面配浅木色', en: 'Open kitchen-to-living core, warm white walls with light wood tones' },
+    photo: 'images/style-modern-open.jpg',
     starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
       note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } },
   },
@@ -51,6 +52,7 @@ const STYLES = [
     id: 'tropical',
     zh: '热带度假风', en: 'Tropical Resort',
     desc: { zh: '室内外连通，门廊是第二客厅，藤编+浅木质感', en: 'Indoor-outdoor connection, porch as a second living space, rattan and light wood' },
+    photo: 'images/style-tropical.jpg',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
       note: { zh: '热带气候，紧凑户型+带顶门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } },
   },
@@ -58,6 +60,7 @@ const STYLES = [
     id: 'japanese',
     zh: '日式精工极简', en: 'Japanese Precision Minimalist',
     desc: { zh: '高定制、低饱和度木色，收纳优先于外露家具', en: 'Highly customized, muted wood tones, built-in storage over exposed furniture' },
+    photo: 'images/style-japanese.jpg',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
       note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } },
   },
@@ -65,6 +68,7 @@ const STYLES = [
     id: 'euro-storage',
     zh: '欧式高效收纳', en: 'European Efficient Storage',
     desc: { zh: '紧凑户型+强收纳系统，冷色中性调', en: 'Compact layout with strong storage systems, cool neutral tones' },
+    photo: 'images/style-euro-storage.jpg',
     starter: { modules: [{ id: 'bedroom-std', qty: 2 }, { id: 'bathroom-std', qty: 1 }, { id: 'living-room', qty: 1 }, { id: 'storage-loft', qty: 1 }],
       note: { zh: '户型偏紧凑，注重能效和收纳空间', en: 'Compact layouts with a focus on energy efficiency and storage' } },
   },
@@ -72,6 +76,7 @@ const STYLES = [
     id: 'luxury',
     zh: '现代奢华', en: 'Modern Luxury',
     desc: { zh: '深色木质+金属点缀，主卧套间尺度更大', en: 'Dark wood with metallic accents, a more generous primary suite' },
+    photo: 'images/style-luxury.jpg',
     starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
       note: { zh: '预制房增速最快的地区之一，偏好更宽敞的主卧套间', en: 'One of the fastest-growing prefab markets — favors a more spacious primary suite' } },
   },
@@ -88,16 +93,34 @@ const I18N = {
     eyebrow: 'AI-POWERED PREFAB WORKSPACE',
     heroTitle: '定制预制房 · 启航全球',
     heroSubtitle: '选择目标市场，搭建你的房型，几分钟看到立体效果。',
-    positioningLabel: '目标市场 · 客户定位',
+    positioningLabel: '所在地 · 客户定位',
     positioningHint: 'PRIORITY MARKETS',
-    navMarket: '目标市场',
+    navCustom: '定制设计',
+    navMarket: '所在地',
     navQuickStart: '快速开始',
     navRecent: '最近项目',
+    customRequestLabel: '有具体想法？',
+    customRequestHint: 'AI 辅助定制设计',
+    customRequestPlaceholder: '例如：想要一个连着餐厅的开放式厨房，再加一个小书房',
+    customRequestBtn: '提交定制需求',
+    customRequestSubHint: '我们会把定制方案发到你邮箱，通常在 48 小时内',
+    customRequestNeedsText: '请先写一下你的需求',
+    modalTitle: '还差一步',
+    modalHint: '定制方案发到哪个邮箱？',
+    modalEmailPlaceholder: 'you@email.com',
+    modalAgree: '我同意被联系以跟进这次需求',
+    modalSubmit: '提交需求',
+    modalEmailError: '请填写一个有效的邮箱地址',
+    modalAgreeError: '请先勾选同意',
+    modalSuccessTitle: '提交成功',
+    modalSuccessBody: '提交成功，我们会在 48 小时内发给你定制方案',
+    modalDone: '好的',
     quickStartLabel: '快速开始',
     quickStartHint: '勾选你需要的房间，最多 6 个模块',
     furnishToggleLabel: '自动摆放家具',
     recommendTitle: '本地区推荐配置',
     recommendApply: '一键套用',
+    recommendViewBtn: '查看详情 →',
     modulesLabel: '个模块',
     generateBtn: '生成方案',
     resultLabel: '生成结果',
@@ -108,7 +131,7 @@ const I18N = {
     footerNote: '生成结果仅供方案预览，具体尺寸以工厂确认为准。',
     recommended: '推荐',
     noProjects: '还没有项目 — 上面生成一个试试',
-    selectMarketFirst: '请先选择目标市场',
+    selectMarketFirst: '请先选择所在地',
     overLimit: '超过 6 个模块，需要人工评估',
     deleteProject: '删除项目',
     confirmDelete: '确定要删除这个项目吗？',
@@ -125,16 +148,34 @@ const I18N = {
     eyebrow: 'AI-POWERED PREFAB WORKSPACE',
     heroTitle: 'Custom Prefab · Go Global',
     heroSubtitle: 'Pick a target market, build your layout, see a 3D result in minutes.',
-    positioningLabel: 'Target market · positioning',
+    positioningLabel: 'Location · positioning',
     positioningHint: 'PRIORITY MARKETS',
-    navMarket: 'Target Market',
+    navCustom: 'Custom Design',
+    navMarket: 'Location',
     navQuickStart: 'Quick Start',
     navRecent: 'Recent Projects',
+    customRequestLabel: 'Have something specific in mind?',
+    customRequestHint: 'CUSTOM AI-ASSISTED DESIGN',
+    customRequestPlaceholder: 'e.g. an open kitchen connected to the dining room, plus a small home office',
+    customRequestBtn: 'Request custom design',
+    customRequestSubHint: "We'll email you a bespoke design — usually within 48 hours",
+    customRequestNeedsText: 'Tell us a bit about what you need first',
+    modalTitle: 'One more thing',
+    modalHint: 'Where should we send your custom design?',
+    modalEmailPlaceholder: 'you@email.com',
+    modalAgree: 'I agree to be contacted about this request',
+    modalSubmit: 'Submit request',
+    modalEmailError: 'Please enter a valid email address',
+    modalAgreeError: 'Please check the agreement box first',
+    modalSuccessTitle: 'Submitted',
+    modalSuccessBody: "Submitted — we'll email you a custom design within 48 hours.",
+    modalDone: 'Done',
     quickStartLabel: 'Quick start',
     quickStartHint: 'Check the rooms you need — up to 6 modules',
     furnishToggleLabel: 'Auto-furnish rooms',
     recommendTitle: 'Recommended for this market',
     recommendApply: 'Use this',
+    recommendViewBtn: 'View details →',
     modulesLabel: 'modules',
     generateBtn: 'Generate',
     resultLabel: 'Result',
@@ -145,7 +186,7 @@ const I18N = {
     footerNote: 'Generated results are a preview only — final dimensions pending factory confirmation.',
     recommended: 'Recommended',
     noProjects: 'No projects yet — generate one above',
-    selectMarketFirst: 'Pick a target market first',
+    selectMarketFirst: 'Pick a location first',
     overLimit: 'Over the 6-module limit — needs engineer review',
     deleteProject: 'Delete project',
     confirmDelete: 'Delete this project?',
@@ -173,6 +214,9 @@ function applyLanguage(lang) {
   currentLang = lang;
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder')));
   });
   document.querySelectorAll('.lang-btn').forEach((btn) => {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
@@ -264,8 +308,15 @@ function updateRecommendCard() {
   if (!style) { card.hidden = true; return; }
   document.getElementById('recommendNote').textContent = style.starter.note[currentLang];
   card.hidden = false;
+  // Photo + view button only appear once "Use this" is actually clicked,
+  // not just on market selection.
+  document.getElementById('recommendPhotoWrap').hidden = true;
+  document.getElementById('recommendPhoto').removeAttribute('src');
 }
 
+// Called after "Use this" is clicked (both the accordion header's quick
+// button and the recommend-card's own button) — applies the module preset
+// and reveals that style's interior photo below the card.
 function applyRecommendation() {
   const market = MARKETS.find((m) => m.code === selectedMarket);
   const style = market && STYLES.find((s) => s.id === market.styleId);
@@ -273,6 +324,22 @@ function applyRecommendation() {
   MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
   style.starter.modules.forEach(({ id, qty }) => { moduleState[id] = qty; });
   renderModuleForm();
+
+  if (style.photo) {
+    document.getElementById('recommendPhoto').src = style.photo;
+    document.getElementById('recommendPhoto').alt = currentLang === 'zh' ? style.zh : style.en;
+    document.getElementById('recommendPhotoWrap').hidden = false;
+
+    const viewBtn = document.getElementById('recommendViewBtn');
+    if (STEP2_URL) {
+      const { requests } = buildModuleRequest();
+      const query = encodeURIComponent(JSON.stringify({ market: selectedMarket, modules: requests, furnish: autoFurnish }));
+      viewBtn.href = `${STEP2_URL}?data=${query}`;
+      viewBtn.hidden = false;
+    } else {
+      viewBtn.hidden = true;
+    }
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -447,10 +514,91 @@ function handleSubmit() {
 }
 
 // ---------------------------------------------------------------------
+// Custom design requests — static site, so this just saves to
+// localStorage (same pattern as recent projects) instead of hitting a
+// backend. In production, swap saveCustomRequest() for a real API call
+// or a form-submission service.
+// ---------------------------------------------------------------------
+const CUSTOM_REQUEST_KEY = 'prefab_custom_requests';
+
+function saveCustomRequest(entry) {
+  try {
+    const list = JSON.parse(localStorage.getItem(CUSTOM_REQUEST_KEY) || '[]');
+    list.unshift({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, ...entry });
+    localStorage.setItem(CUSTOM_REQUEST_KEY, JSON.stringify(list.slice(0, 50)));
+  } catch {
+    // localStorage unavailable (private browsing etc.) — request still
+    // showed the success screen, it just won't persist. Not worth
+    // blocking the user's flow over.
+  }
+}
+
+function openCustomModal() {
+  document.getElementById('customModalForm').hidden = false;
+  document.getElementById('customModalSuccess').hidden = true;
+  document.getElementById('modalError').hidden = true;
+  document.getElementById('customModalEmail').value = '';
+  document.getElementById('customModalAgree').checked = false;
+  document.getElementById('customModalOverlay').hidden = false;
+}
+
+function closeCustomModal() {
+  document.getElementById('customModalOverlay').hidden = true;
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function handleCustomRequestSubmit() {
+  const text = document.getElementById('customRequestText').value.trim();
+  if (!text) {
+    alert(t('customRequestNeedsText'));
+    return;
+  }
+  openCustomModal();
+}
+
+function handleModalSubmit() {
+  const email = document.getElementById('customModalEmail').value.trim();
+  const agreed = document.getElementById('customModalAgree').checked;
+  const errorEl = document.getElementById('modalError');
+
+  if (!isValidEmail(email)) {
+    errorEl.textContent = t('modalEmailError');
+    errorEl.hidden = false;
+    return;
+  }
+  if (!agreed) {
+    errorEl.textContent = t('modalAgreeError');
+    errorEl.hidden = false;
+    return;
+  }
+  errorEl.hidden = true;
+
+  saveCustomRequest({
+    email,
+    requirement: document.getElementById('customRequestText').value.trim(),
+    market: selectedMarket,
+    date: Date.now(),
+  });
+
+  document.getElementById('customModalForm').hidden = true;
+  document.getElementById('customModalSuccess').hidden = false;
+}
+
+// ---------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------
 document.getElementById('submitBtn').addEventListener('click', handleSubmit);
 document.getElementById('recommendBtn').addEventListener('click', applyRecommendation);
+document.getElementById('customRequestBtn').addEventListener('click', handleCustomRequestSubmit);
+document.getElementById('customModalSubmit').addEventListener('click', handleModalSubmit);
+document.getElementById('customModalClose').addEventListener('click', closeCustomModal);
+document.getElementById('customModalDone').addEventListener('click', closeCustomModal);
+document.getElementById('customModalOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'customModalOverlay') closeCustomModal();
+});
 document.getElementById('furnishToggle').addEventListener('click', (e) => {
   autoFurnish = !autoFurnish;
   e.currentTarget.classList.toggle('on', autoFurnish);

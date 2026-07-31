@@ -20,7 +20,8 @@
     <span class="brand-name" data-i18n="brandName">Custom Prefab House</span>
   </div>
   <nav class="nav-links">
-    <a href="#positioning" data-i18n="navMarket">Target Market</a>
+    <a href="#customRequest" data-i18n="navCustom">Custom Design</a>
+    <a href="#positioning" data-i18n="navMarket">Location</a>
     <a href="#quickStart" data-i18n="navQuickStart">Quick Start</a>
     <a href="#recentProjects" data-i18n="navRecent">Recent Projects</a>
   </nav>
@@ -34,7 +35,8 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#positioning" data-i18n="navMarket">Target Market</a>
+  <a href="#customRequest" data-i18n="navCustom">Custom Design</a>
+  <a href="#positioning" data-i18n="navMarket">Location</a>
   <a href="#quickStart" data-i18n="navQuickStart">Quick Start</a>
   <a href="#recentProjects" data-i18n="navRecent">Recent Projects</a>
 </div>
@@ -46,9 +48,26 @@
     <p class="subtitle" data-i18n="heroSubtitle">Pick a target market, build your layout, see a 3D result in minutes.</p>
   </section>
 
+  <section class="custom-request" id="customRequest">
+    <div class="section-head">
+      <h2 data-i18n="customRequestLabel">Have something specific in mind?</h2>
+      <p class="section-hint" data-i18n="customRequestHint">CUSTOM AI-ASSISTED DESIGN</p>
+    </div>
+    <textarea
+      class="custom-request-textarea"
+      id="customRequestText"
+      data-i18n-placeholder="customRequestPlaceholder"
+      placeholder="e.g. an open kitchen connected to the dining room, plus a small home office"
+    ></textarea>
+    <div class="custom-request-row">
+      <button class="custom-request-btn" id="customRequestBtn" type="button" data-i18n="customRequestBtn">Request custom design</button>
+      <span class="custom-request-hint" data-i18n="customRequestSubHint">We'll email you a bespoke design — usually within 48 hours</span>
+    </div>
+  </section>
+
   <section class="positioning" id="positioning">
     <div class="section-head">
-      <h2 data-i18n="positioningLabel">Target market · positioning</h2>
+      <h2 data-i18n="positioningLabel">Location · positioning</h2>
       <p class="section-hint" data-i18n="positioningHint">PRIORITY MARKETS</p>
     </div>
     <div class="market-grid" id="marketGrid"></div>
@@ -66,11 +85,17 @@
     </div>
 
     <div class="recommend-card" id="recommendCard" hidden>
-      <div class="recommend-text">
-        <span class="recommend-title" data-i18n="recommendTitle">Recommended for this market</span>
-        <span class="recommend-note" id="recommendNote"></span>
+      <div class="recommend-card-top">
+        <div class="recommend-text">
+          <span class="recommend-title" data-i18n="recommendTitle">Recommended for this market</span>
+          <span class="recommend-note" id="recommendNote"></span>
+        </div>
+        <button class="recommend-btn" id="recommendBtn" type="button" data-i18n="recommendApply">Use this</button>
       </div>
-      <button class="recommend-btn" id="recommendBtn" type="button" data-i18n="recommendApply">Use this</button>
+      <div class="recommend-photo-wrap" id="recommendPhotoWrap" hidden>
+        <img class="recommend-photo" id="recommendPhoto" alt="">
+        <a class="recommend-view-btn" id="recommendViewBtn" href="#" data-i18n="recommendViewBtn">View details →</a>
+      </div>
     </div>
 
     <div class="module-form" id="moduleForm"></div>
@@ -109,6 +134,30 @@
 <footer class="site-footer">
   <p data-i18n="footerNote">Generated results are a preview only — final dimensions pending factory confirmation.</p>
 </footer>
+
+<div class="modal-overlay" id="customModalOverlay" hidden>
+  <div class="modal-card">
+    <button class="modal-close" id="customModalClose" type="button" aria-label="Close">&times;</button>
+
+    <div id="customModalForm">
+      <h3 data-i18n="modalTitle">One more thing</h3>
+      <p class="modal-hint" data-i18n="modalHint">Where should we send your custom design?</p>
+      <input type="email" class="modal-input" id="customModalEmail" data-i18n-placeholder="modalEmailPlaceholder" placeholder="you@email.com">
+      <label class="modal-checkbox-row">
+        <input type="checkbox" id="customModalAgree">
+        <span data-i18n="modalAgree">I agree to be contacted about this request</span>
+      </label>
+      <p class="modal-error" id="modalError" hidden></p>
+      <button class="modal-submit-btn" id="customModalSubmit" type="button" data-i18n="modalSubmit">Submit request</button>
+    </div>
+
+    <div id="customModalSuccess" hidden>
+      <h3 data-i18n="modalSuccessTitle">Submitted</h3>
+      <p data-i18n="modalSuccessBody">We'll email you a custom design within 48 hours.</p>
+      <button class="modal-submit-btn" id="customModalDone" type="button" data-i18n="modalDone">Done</button>
+    </div>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>
