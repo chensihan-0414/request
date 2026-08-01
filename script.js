@@ -39,9 +39,6 @@ const MARKETS = [
   { code: 'mx', flag: '🇲🇽', zh: '墨西哥', en: 'Mexico', styleId: 'tropical' },
   { code: 'au', flag: '🇦🇺', zh: '澳大利亚', en: 'Australia', styleId: 'tropical' },
   { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', styleId: 'japanese' },
-  { code: 'gb', flag: '🇬🇧', zh: '英国', en: 'United Kingdom', styleId: 'euro-storage' },
-  { code: 'de', flag: '🇩🇪', zh: '德国', en: 'Germany', styleId: 'euro-storage' },
-  { code: 'ae', flag: '🇦🇪', zh: '阿联酋', en: 'United Arab Emirates', styleId: 'luxury' },
 ];
 
 const STYLES = [
@@ -71,22 +68,6 @@ const STYLES = [
     showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/b76791ad58da',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
       note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } },
-  },
-  {
-    id: 'euro-storage',
-    zh: '欧式高效收纳', en: 'European Efficient Storage',
-    desc: { zh: '紧凑户型+强收纳系统，冷色中性调', en: 'Compact layout with strong storage systems, cool neutral tones' },
-    photo: 'images/style-euro-storage.jpg',
-    starter: { modules: [{ id: 'bedroom-std', qty: 2 }, { id: 'bathroom-std', qty: 1 }, { id: 'living-room', qty: 1 }, { id: 'storage-loft', qty: 1 }],
-      note: { zh: '户型偏紧凑，注重能效和收纳空间', en: 'Compact layouts with a focus on energy efficiency and storage' } },
-  },
-  {
-    id: 'luxury',
-    zh: '现代奢华', en: 'Modern Luxury',
-    desc: { zh: '深色木质+金属点缀，主卧套间尺度更大', en: 'Dark wood with metallic accents, a more generous primary suite' },
-    photo: 'images/style-luxury.jpg',
-    starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
-      note: { zh: '预制房增速最快的地区之一，偏好更宽敞的主卧套间', en: 'One of the fastest-growing prefab markets — favors a more spacious primary suite' } },
   },
 ];
 
@@ -123,6 +104,9 @@ const I18N = {
     modalSuccessTitle: '提交成功',
     modalSuccessBody: '提交成功，我们会在 48 小时内发给你定制方案',
     modalDone: '好的',
+    designSavedTitle: '设计已保存',
+    designSavedBody: '你的设计图已经下载完成。要联系工厂了解生产吗？',
+    contactFactoryBtn: '联系工厂',
     quickStartLabel: '⚡ 快速开始',
     quickStartHint: '勾选你需要的房间，最多 6 个模块，几秒钟出效果',
     recommendTitle: '本地区推荐配置',
@@ -177,6 +161,9 @@ const I18N = {
     modalSuccessTitle: 'Submitted',
     modalSuccessBody: "Submitted — we'll email you a custom design within 48 hours.",
     modalDone: 'Done',
+    designSavedTitle: 'Design saved',
+    designSavedBody: 'Your design image has been downloaded. Ready to talk to a factory?',
+    contactFactoryBtn: 'Contact factory',
     quickStartLabel: '⚡ Quick start',
     quickStartHint: 'Check the rooms you need — up to 6 modules, results in seconds',
     recommendTitle: 'Recommended for this market',
@@ -541,6 +528,21 @@ function closeCustomModal() {
   document.getElementById('customModalOverlay').hidden = true;
 }
 
+// Shown when a buyer arrives back from the Pascal editor's "Save image"
+// button (see STYLES[].showcaseUrl / apps/editor's scene-loader.tsx), which
+// redirects here with ?saved=1 after downloading their design PNG.
+function maybeShowDesignSaved() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('saved') !== '1') return;
+  document.getElementById('designSavedOverlay').hidden = false;
+  // Drop the query param so a refresh/share of the URL doesn't re-trigger it.
+  window.history.replaceState({}, '', window.location.pathname);
+}
+
+function closeDesignSaved() {
+  document.getElementById('designSavedOverlay').hidden = true;
+}
+
 function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -594,6 +596,16 @@ document.getElementById('customModalDone').addEventListener('click', closeCustom
 document.getElementById('customModalOverlay').addEventListener('click', (e) => {
   if (e.target.id === 'customModalOverlay') closeCustomModal();
 });
+document.getElementById('designSavedClose').addEventListener('click', closeDesignSaved);
+document.getElementById('designSavedOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'designSavedOverlay') closeDesignSaved();
+});
+// Factory hand-off isn't built yet — reuse the existing "leave your email"
+// modal as a stand-in so the button does something real in the meantime.
+document.getElementById('designSavedContactBtn').addEventListener('click', () => {
+  closeDesignSaved();
+  openCustomModal();
+});
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('resultJson').textContent);
 });
@@ -615,3 +627,4 @@ mobileMenu.querySelectorAll('a').forEach((link) => {
 });
 
 applyLanguage('en');
+maybeShowDesignSaved();
