@@ -2,10 +2,15 @@
 // Config
 // ---------------------------------------------------------------------
 // "Continue building" jumps straight into the finished Pascal editor scene
-// (a shared, already-furnished showcase house) rather than through the
-// per-request auto-build flow above — visitors can freely edit it without
-// touching the original.
-const CONTINUE_BUILDING_URL = 'https://editor-five-mocha.vercel.app/scene/b9bc64ce220f';
+// for the currently selected style (a shared, already-furnished showcase
+// house — see STYLES[].showcaseUrl below) rather than through the
+// per-request auto-build flow — visitors can freely edit it without
+// touching the original. Styles without a showcaseUrl yet hide the button.
+function getShowcaseUrl(marketCode) {
+  const market = MARKETS.find((m) => m.code === marketCode);
+  const style = market && STYLES.find((s) => s.id === market.styleId);
+  return style && style.showcaseUrl ? style.showcaseUrl : null;
+}
 
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
@@ -45,6 +50,7 @@ const STYLES = [
     zh: '现代开放简约', en: 'Modern Open Minimalist',
     desc: { zh: '开放式厨房+客厅是核心，暖白墙面配浅木色', en: 'Open kitchen-to-living core, warm white walls with light wood tones' },
     photo: 'images/style-modern-open.jpg',
+    showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/b9bc64ce220f',
     starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
       note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } },
   },
@@ -53,6 +59,7 @@ const STYLES = [
     zh: '热带度假风', en: 'Tropical Resort',
     desc: { zh: '室内外连通，门廊是第二客厅，藤编+浅木质感', en: 'Indoor-outdoor connection, porch as a second living space, rattan and light wood' },
     photo: 'images/style-tropical.jpg',
+    showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/c765022b5668',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
       note: { zh: '热带气候，紧凑户型+带顶门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } },
   },
@@ -489,8 +496,13 @@ function handleSubmit() {
   saveProject({ market: selectedMarket, moduleCount: finalTotal, date: Date.now(), requests });
   renderProjects();
 
-  document.getElementById('continueLink').href = CONTINUE_BUILDING_URL;
-  continueRow.hidden = false;
+  const showcaseUrl = getShowcaseUrl(selectedMarket);
+  if (showcaseUrl) {
+    document.getElementById('continueLink').href = showcaseUrl;
+    continueRow.hidden = false;
+  } else {
+    continueRow.hidden = true;
+  }
 
   resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
