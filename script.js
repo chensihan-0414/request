@@ -1,15 +1,17 @@
 // ---------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------
-// "Continue building" jumps straight into the finished Pascal editor scene
-// for the currently selected style (a shared, already-furnished showcase
-// house — see STYLES[].showcaseUrl below) rather than through the
-// per-request auto-build flow — visitors can freely edit it without
-// touching the original. Styles without a showcaseUrl yet hide the button.
-function getShowcaseUrl(marketCode) {
-  const market = MARKETS.find((m) => m.code === marketCode);
-  const style = market && STYLES.find((s) => s.id === market.styleId);
-  return style && style.showcaseUrl ? style.showcaseUrl : null;
+// "Continue building" jumps into the user's own Pascal editor deployment
+// (this repo's apps/editor — NOT editor.pascal.app, which is a separate,
+// unrelated hosted product) at /step1?data=..., which builds a fresh,
+// fully-connected scene from the exact module list the visitor picked
+// (or the style's starter preset) and opens it ready to edit. Update
+// EDITOR_ORIGIN if the editor's production domain ever changes.
+const EDITOR_ORIGIN = 'https://editor-editor-f4ec.vercel.app';
+
+function buildStep1Url(modules, marketCode) {
+  const payload = { market: marketCode, modules, furnish: true };
+  return `${EDITOR_ORIGIN}/step1?data=${encodeURIComponent(JSON.stringify(payload))}`;
 }
 
 // ---------------------------------------------------------------------
@@ -47,7 +49,6 @@ const STYLES = [
     zh: '现代开放简约', en: 'Modern Open Minimalist',
     desc: { zh: '开放式厨房+客厅是核心，暖白墙面配浅木色', en: 'Open kitchen-to-living core, warm white walls with light wood tones' },
     photo: 'images/style-modern-open.jpg',
-    showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/b9bc64ce220f',
     starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
       note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } },
   },
@@ -56,7 +57,6 @@ const STYLES = [
     zh: '热带度假风', en: 'Tropical Resort',
     desc: { zh: '室内外连通，门廊是第二客厅，藤编+浅木质感', en: 'Indoor-outdoor connection, porch as a second living space, rattan and light wood' },
     photo: 'images/style-tropical.jpg',
-    showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/c765022b5668',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
       note: { zh: '热带气候，紧凑户型+带顶门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } },
   },
@@ -65,7 +65,6 @@ const STYLES = [
     zh: '日式精工极简', en: 'Japanese Precision Minimalist',
     desc: { zh: '高定制、低饱和度木色，收纳优先于外露家具', en: 'Highly customized, muted wood tones, built-in storage over exposed furniture' },
     photo: 'images/style-japanese.png',
-    showcaseUrl: 'https://editor-five-mocha.vercel.app/scene/b76791ad58da',
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
       note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } },
   },
@@ -253,10 +252,13 @@ function renderMarkets() {
     header.querySelector('.style-recommend-btn').addEventListener('click', () => {
       selectedMarket = marketsInStyle[0].code;
       expandedStyles.add(style.id);
-      applyRecommendation();
       renderMarkets();
       updateSelectedMarketLabel();
+      // updateRecommendCard() resets the photo slot before applyRecommendation()
+      // fills it back in — order matters here. Reversing these two calls silently
+      // drops the recommended-style photo (it briefly gets set, then wiped).
       updateRecommendCard();
+      applyRecommendation();
       document.getElementById('quickStart').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     group.appendChild(header);
@@ -484,13 +486,11 @@ function handleSubmit() {
   saveProject({ market: selectedMarket, moduleCount: finalTotal, date: Date.now(), requests });
   renderProjects();
 
-  const showcaseUrl = getShowcaseUrl(selectedMarket);
-  if (showcaseUrl) {
-    document.getElementById('continueLink').href = showcaseUrl;
-    continueRow.hidden = false;
-  } else {
-    continueRow.hidden = true;
-  }
+  // Build the visitor's *actual* module selection into a fresh, connected
+  // scene on our own editor — not a static pre-built showcase, so what
+  // they see always matches what they just configured.
+  document.getElementById('continueLink').href = buildStep1Url(requests, selectedMarket);
+  continueRow.hidden = false;
 
   resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -529,8 +529,8 @@ function closeCustomModal() {
 }
 
 // Shown when a buyer arrives back from the Pascal editor's "Save image"
-// button (see STYLES[].showcaseUrl / apps/editor's scene-loader.tsx), which
-// redirects here with ?saved=1 after downloading their design PNG.
+// button (see apps/editor's scene-loader.tsx), which redirects here with
+// ?saved=1 after downloading their design PNG.
 function maybeShowDesignSaved() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('saved') !== '1') return;
