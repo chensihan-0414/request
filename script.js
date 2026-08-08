@@ -14,6 +14,12 @@ function buildStep1Url(modules, marketCode) {
   return `${EDITOR_ORIGIN}/step1?data=${encodeURIComponent(JSON.stringify(payload))}`;
 }
 
+// Server-side AI parsing endpoint (apps/editor/app/api/parse-request/route.ts)
+// — turns the visitor's free-text room description into a { modules,
+// unmapped } module list using the site owner's own Anthropic key, never
+// one collected from the visitor. See handleInstantGenerate() below.
+const PARSE_REQUEST_URL = `${EDITOR_ORIGIN}/api/parse-request`;
+
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
 // ---------------------------------------------------------------------
@@ -120,6 +126,11 @@ const I18N = {
     customRequestBtn: '提交定制需求',
     customRequestSubHint: '我们会把定制方案发到你邮箱，通常在 48 小时内',
     customRequestNeedsText: '请先写一下你的需求',
+    instantGenerateBtn: '⚡ AI 立即生成',
+    instantGenerateBtnLoading: '生成中…',
+    instantGenerateError: '生成失败，请稍后重试，或改用下方的人工定制申请',
+    instantGenerateRateLimited: '请求太频繁了，请稍等一分钟再试',
+    instantGenerateEmpty: 'AI 没能从描述里识别出房间，试着写得更具体些（比如"两间卧室、一个开放式厨房、一个卫生间"）',
     modalTitle: '还差一步',
     modalHint: '定制方案发到哪个邮箱？',
     modalEmailPlaceholder: 'you@email.com',
@@ -182,6 +193,11 @@ const I18N = {
     customRequestBtn: 'Request custom design',
     customRequestSubHint: "We'll email you a bespoke design — usually within 48 hours",
     customRequestNeedsText: 'Tell us a bit about what you need first',
+    instantGenerateBtn: '⚡ Generate now (AI)',
+    instantGenerateBtnLoading: 'Generating…',
+    instantGenerateError: 'Generation failed — please try again shortly, or use the manual request below',
+    instantGenerateRateLimited: "That's too many requests — please wait a minute and try again",
+    instantGenerateEmpty: "AI couldn't identify any rooms in that description — try being more specific (e.g. \"two bedrooms, an open kitchen, one bathroom\")",
     modalTitle: 'One more thing',
     modalHint: 'Where should we send your custom design?',
     modalEmailPlaceholder: 'you@email.com',
@@ -638,6 +654,57 @@ function isValidEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+// ---------------------------------------------------------------------
+// Instant AI generate — the "自由输入房间数量/需求，AI解析成模块清单，
+// 自动拼成户型" flow: sends the visitor's free text to our own
+// /api/parse-request endpoint (server-side Anthropic key, never the
+// visitor's), turns the returned module list straight into a fresh
+// editor scene via buildStep1Url(), and opens it in a new tab. Falls
+// back to the manual "Request custom design" modal on any failure —
+// this is a convenience shortcut, not a replacement for that path.
+// ---------------------------------------------------------------------
+async function handleInstantGenerate() {
+  const text = document.getElementById('customRequestText').value.trim();
+  if (!text) {
+    alert(t('customRequestNeedsText'));
+    return;
+  }
+
+  const btn = document.getElementById('instantGenerateBtn');
+  const statusEl = document.getElementById('instantGenerateStatus');
+  const originalLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = t('instantGenerateBtnLoading');
+  statusEl.hidden = true;
+  statusEl.classList.remove('error');
+
+  try {
+    const res = await fetch(PARSE_REQUEST_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+
+    if (res.status === 429) throw new Error(t('instantGenerateRateLimited'));
+    if (!res.ok) throw new Error(t('instantGenerateError'));
+
+    const result = await res.json();
+    if (!Array.isArray(result.modules) || result.modules.length === 0) {
+      throw new Error(t('instantGenerateEmpty'));
+    }
+
+    const url = buildStep1Url(result.modules, selectedMarket);
+    window.open(url, '_blank', 'noopener');
+  } catch (err) {
+    statusEl.textContent = (err && err.message) || t('instantGenerateError');
+    statusEl.classList.add('error');
+    statusEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
 function handleCustomRequestSubmit() {
   const text = document.getElementById('customRequestText').value.trim();
   if (!text) {
@@ -685,6 +752,7 @@ document.getElementById('budgetSlider').addEventListener('input', (e) => {
   updateBudgetEstimate();
 });
 document.getElementById('customRequestBtn').addEventListener('click', handleCustomRequestSubmit);
+document.getElementById('instantGenerateBtn').addEventListener('click', handleInstantGenerate);
 document.getElementById('customModalSubmit').addEventListener('click', handleModalSubmit);
 document.getElementById('customModalClose').addEventListener('click', closeCustomModal);
 document.getElementById('customModalDone').addEventListener('click', closeCustomModal);

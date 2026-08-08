@@ -124,9 +124,11 @@
       placeholder="e.g. an open kitchen connected to the dining room, plus a small home office"
     ></textarea>
     <div class="custom-request-row">
-      <button class="custom-request-btn" id="customRequestBtn" type="button" data-i18n="customRequestBtn">Request custom design</button>
-      <span class="custom-request-hint" data-i18n="customRequestSubHint">We'll email you a bespoke design — usually within 48 hours</span>
+      <button class="custom-request-btn" id="instantGenerateBtn" type="button" data-i18n="instantGenerateBtn">⚡ Generate now (AI)</button>
+      <button class="custom-request-btn secondary" id="customRequestBtn" type="button" data-i18n="customRequestBtn">Request custom design</button>
     </div>
+    <p class="custom-request-hint" data-i18n="customRequestSubHint">We'll email you a bespoke design — usually within 48 hours</p>
+    <p class="instant-generate-status" id="instantGenerateStatus" hidden></p>
   </section>
 
   <section class="recent-projects" id="recentProjects">

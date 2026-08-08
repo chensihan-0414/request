@@ -278,7 +278,17 @@ section { margin-top: 88px; }
 }
 .custom-request-btn:hover { background: #3FD684; }
 .custom-request-btn:active { transform: scale(0.98); }
+.custom-request-btn:disabled { background: var(--glass-bg-strong); color: var(--ink-faint); cursor: not-allowed; }
+.custom-request-btn.secondary {
+  background: transparent; color: var(--emerald);
+  border: 1px solid var(--emerald);
+}
+.custom-request-btn.secondary:hover { background: var(--emerald-tint); }
 .custom-request-hint { font-size: 13px; color: var(--ink-faint); }
+.instant-generate-status {
+  margin-top: 10px; font-size: 13px; color: var(--ink-soft);
+}
+.instant-generate-status.error { color: var(--warn); }
 
 /* Recommend card — split top row + optional photo reveal */
 .recommend-card-top {
