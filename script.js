@@ -29,6 +29,22 @@ const MODULE_CATALOG = [
 const MAX_MODULES = 6;
 
 // ---------------------------------------------------------------------
+// Budget slider — 3 fixed price-per-m² tiers, applied to whatever
+// footprint the visitor's current module picks add up to (see
+// moduleAreaSqm/totalSelectedAreaSqm/updateBudgetEstimate below). Rates
+// come from an Alibaba light-steel-villa market-price sanity check done
+// for this project (basic prefab ~$150/m², mid ~$220/m², higher-end
+// light-steel with a 10-year structural warranty ~$280/m²) — an estimate,
+// not a quote from any specific factory.
+// ---------------------------------------------------------------------
+const BUDGET_TIERS = [
+  { ratePerSqm: 150, i18nKey: 'budgetLow' },
+  { ratePerSqm: 220, i18nKey: 'budgetMid' },
+  { ratePerSqm: 280, i18nKey: 'budgetHigh' },
+];
+let budgetTierIndex = 1; // default to the middle (Standard) tier
+
+// ---------------------------------------------------------------------
 // Markets — extend this list freely, the grid is fully data-driven
 // ---------------------------------------------------------------------
 const MARKETS = [
@@ -143,6 +159,11 @@ const I18N = {
     livingRoom: '客厅',
     porchCovered: '门廊',
     storageLoft: '阁楼储物',
+    budgetLabel: '预算档位',
+    budgetLow: '经济款',
+    budgetMid: '标准款',
+    budgetHigh: '高定款',
+    budgetHint: '勾选房间后查看预估预算',
   },
   en: {
     brandName: 'Custom Prefab House',
@@ -200,6 +221,11 @@ const I18N = {
     livingRoom: 'Living room',
     porchCovered: 'Covered porch',
     storageLoft: 'Loft storage',
+    budgetLabel: 'Budget level',
+    budgetLow: 'Basic',
+    budgetMid: 'Standard',
+    budgetHigh: 'Premium',
+    budgetHint: 'Pick some rooms to see an estimate',
   },
 };
 
@@ -228,6 +254,7 @@ function applyLanguage(lang) {
   renderProjects();
   updateSelectedMarketLabel();
   updateRecommendCard();
+  updateBudgetEstimate();
 }
 
 // ---------------------------------------------------------------------
@@ -328,6 +355,11 @@ function applyRecommendation() {
   if (!style) return;
   MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
   style.starter.modules.forEach(({ id, qty }) => { moduleState[id] = qty; });
+  // Recommended presets always default to the Standard (middle) budget
+  // tier — a visitor can still drag the slider afterward.
+  budgetTierIndex = 1;
+  const budgetSlider = document.getElementById('budgetSlider');
+  if (budgetSlider) budgetSlider.value = 1;
   renderModuleForm();
 
   if (style.photo) {
@@ -349,6 +381,50 @@ function updateCounter() {
   const counterEl = document.getElementById('moduleCount');
   counterEl.textContent = total;
   document.querySelector('.module-counter').classList.toggle('over', total > MAX_MODULES);
+  updateBudgetEstimate();
+}
+
+// ---------------------------------------------------------------------
+// Budget estimate — live off whatever's currently checked/stepped in the
+// Quick Start form, times the selected tier's rate. Re-run on every
+// module change (via updateCounter above) and every slider move.
+// ---------------------------------------------------------------------
+function moduleAreaSqm(sub) {
+  // MODULE_CATALOG's `sub` field is a dimension label like "6m x 3m" for
+  // most modules; storage-loft's is "Pitched roof only" (no footprint of
+  // its own — it rides on the roof, not counted as separate floor area).
+  const match = /(\d+(?:\.\d+)?)\s*m\s*x\s*(\d+(?:\.\d+)?)\s*m/i.exec(sub);
+  if (!match) return 0;
+  return Number(match[1]) * Number(match[2]);
+}
+
+function totalSelectedAreaSqm() {
+  return MODULE_CATALOG.reduce((sum, m) => sum + moduleAreaSqm(m.sub) * (moduleState[m.id] || 0), 0);
+}
+
+function updateBudgetEstimate() {
+  const slider = document.getElementById('budgetSlider');
+  if (!slider) return; // guard — this fn can fire before Init wiring runs
+
+  const tier = BUDGET_TIERS[budgetTierIndex];
+  const areaSqm = totalSelectedAreaSqm();
+  const estimateEl = document.getElementById('budgetEstimate');
+  if (areaSqm > 0) {
+    const estimate = Math.round(areaSqm * tier.ratePerSqm);
+    estimateEl.textContent = `$${estimate.toLocaleString('en-US')} · ${areaSqm}m²`;
+  } else {
+    estimateEl.textContent = t('budgetHint');
+  }
+
+  document.querySelectorAll('.budget-tick').forEach((tick) => {
+    tick.classList.toggle('active', Number(tick.getAttribute('data-tier')) === budgetTierIndex);
+  });
+
+  // Fill the track up to the thumb (0 / 50 / 100%) — a plain range input
+  // has no built-in "filled" segment, so this is done with an inline
+  // gradient recomputed on every change.
+  const fillPct = (budgetTierIndex / (BUDGET_TIERS.length - 1)) * 100;
+  slider.style.background = `linear-gradient(to right, var(--emerald) 0%, var(--emerald) ${fillPct}%, var(--glass-bg-strong) ${fillPct}%, var(--glass-bg-strong) 100%)`;
 }
 
 function renderModuleForm() {
@@ -604,6 +680,10 @@ function handleModalSubmit() {
 // ---------------------------------------------------------------------
 document.getElementById('submitBtn').addEventListener('click', handleSubmit);
 document.getElementById('recommendBtn').addEventListener('click', applyRecommendation);
+document.getElementById('budgetSlider').addEventListener('input', (e) => {
+  budgetTierIndex = Number(e.target.value);
+  updateBudgetEstimate();
+});
 document.getElementById('customRequestBtn').addEventListener('click', handleCustomRequestSubmit);
 document.getElementById('customModalSubmit').addEventListener('click', handleModalSubmit);
 document.getElementById('customModalClose').addEventListener('click', closeCustomModal);

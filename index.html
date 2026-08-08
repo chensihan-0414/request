@@ -67,6 +67,19 @@
       <span class="counter-label" data-i18n="modulesLabel">modules</span>
     </div>
 
+    <div class="budget-widget" id="budgetWidget">
+      <div class="budget-head">
+        <span class="budget-label" data-i18n="budgetLabel">Budget level</span>
+        <span class="budget-estimate" id="budgetEstimate">—</span>
+      </div>
+      <input type="range" class="budget-slider" id="budgetSlider" min="0" max="2" step="1" value="1" aria-label="Budget level">
+      <div class="budget-ticks">
+        <span class="budget-tick" data-tier="0" data-i18n="budgetLow">Basic</span>
+        <span class="budget-tick" data-tier="1" data-i18n="budgetMid">Standard</span>
+        <span class="budget-tick" data-tier="2" data-i18n="budgetHigh">Premium</span>
+      </div>
+    </div>
+
     <div class="recommend-card" id="recommendCard" hidden>
       <div class="recommend-card-top">
         <div class="recommend-text">

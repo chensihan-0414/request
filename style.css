@@ -378,6 +378,68 @@ section { margin-top: 88px; }
 .counter-label { font-weight: 400; color: var(--ink-soft); font-size: 13px; margin-left: 4px; }
 .module-counter.over { border-color: var(--warn); color: var(--warn); background: var(--warn-tint); }
 
+/* Budget slider — 3-stop range input (basic / standard / premium),
+   snaps rather than free-drags. Recomputes live off the visitor's current
+   module picks (see updateBudgetEstimate() in script.js). */
+.budget-widget {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 20px 24px 16px;
+  margin-bottom: 22px;
+}
+.budget-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.budget-label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
+.budget-estimate { font-family: var(--font-display); font-size: 19px; font-weight: 700; color: var(--emerald); }
+
+.budget-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--glass-bg-strong);
+  outline: none;
+  cursor: pointer;
+  margin: 6px 0 10px;
+}
+.budget-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--emerald);
+  border: 3px solid var(--forest);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+.budget-slider::-webkit-slider-thumb:hover { transform: scale(1.12); }
+.budget-slider::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--emerald);
+  border: 3px solid var(--forest);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+.budget-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--glass-bg-strong);
+}
+.budget-slider::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--emerald);
+}
+
+.budget-ticks { display: flex; justify-content: space-between; }
+.budget-tick { font-size: 12px; color: var(--ink-faint); font-weight: 500; transition: color 0.15s ease; }
+.budget-tick.active { color: var(--emerald); font-weight: 700; }
+
 .module-form {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
