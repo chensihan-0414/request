@@ -43,12 +43,21 @@ const MARKETS = [
   { code: 'jp', flag: '🇯🇵', zh: '日本', en: 'Japan', styleId: 'japanese' },
 ];
 
+// Each style below carries a `showcaseUrl` pointing at one of the three
+// hand-authored replica houses in the editor repo
+// (apps/editor/lib/prefab/replica-apartment-{1,2,3}.ts), reached via
+// /step1?replica=<id> rather than the dynamic /step1?data=... flow that
+// buildStep1Url() produces from a visitor's own module picks. handleSubmit()
+// below prefers this fixed URL when present, so "Continue building" for
+// these three styles always opens that style's dedicated house instead of
+// a freshly assembled one from the Quick Start selection.
 const STYLES = [
   {
     id: 'modern-open',
     zh: '现代开放简约', en: 'Modern Open Minimalist',
     desc: { zh: '开放式厨房+客厅是核心，暖白墙面配浅木色', en: 'Open kitchen-to-living core, warm white walls with light wood tones' },
     photo: 'images/style-modern-open.jpg',
+    showcaseUrl: `${EDITOR_ORIGIN}/step1?replica=apartment-1`,
     starter: { modules: [{ id: 'bedroom-master', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'living-room', qty: 1 }],
       note: { zh: '开放式厨房+客厅是当地主流，主卧套间是近两年的热门升级', en: 'Open kitchen-to-living is the norm; a primary suite is a top 2026 upgrade' } },
   },
@@ -57,6 +66,7 @@ const STYLES = [
     zh: '热带度假风', en: 'Tropical Resort',
     desc: { zh: '室内外连通，门廊是第二客厅，藤编+浅木质感', en: 'Indoor-outdoor connection, porch as a second living space, rattan and light wood' },
     photo: 'images/style-tropical.jpg',
+    showcaseUrl: `${EDITOR_ORIGIN}/step1?replica=apartment-2`,
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'porch-covered', qty: 1 }],
       note: { zh: '热带气候，紧凑户型+带顶门廊是常见配置', en: 'Tropical climate — compact layout plus a covered porch is typical' } },
   },
@@ -65,6 +75,7 @@ const STYLES = [
     zh: '日式精工极简', en: 'Japanese Precision Minimalist',
     desc: { zh: '高定制、低饱和度木色，收纳优先于外露家具', en: 'Highly customized, muted wood tones, built-in storage over exposed furniture' },
     photo: 'images/style-japanese.png',
+    showcaseUrl: `${EDITOR_ORIGIN}/step1?replica=apartment-3`,
     starter: { modules: [{ id: 'bedroom-std', qty: 1 }, { id: 'bathroom-std', qty: 1 }, { id: 'kitchen-open', qty: 1 }, { id: 'storage-loft', qty: 1 }],
       note: { zh: '当地预制房走精致、高定制路线，紧凑+高效收纳是特色', en: 'Japanese prefab leans premium and highly customized — compact and storage-efficient' } },
   },
@@ -486,10 +497,14 @@ function handleSubmit() {
   saveProject({ market: selectedMarket, moduleCount: finalTotal, date: Date.now(), requests });
   renderProjects();
 
-  // Build the visitor's *actual* module selection into a fresh, connected
-  // scene on our own editor — not a static pre-built showcase, so what
-  // they see always matches what they just configured.
-  document.getElementById('continueLink').href = buildStep1Url(requests, selectedMarket);
+  // Prefer the selected style's fixed showcase house (see the STYLES[]
+  // comment above) when it has one; otherwise fall back to building the
+  // visitor's *actual* module selection into a fresh, connected scene on
+  // our own editor.
+  const market = MARKETS.find((m) => m.code === selectedMarket);
+  const style = market && STYLES.find((s) => s.id === market.styleId);
+  document.getElementById('continueLink').href =
+    style && style.showcaseUrl ? style.showcaseUrl : buildStep1Url(requests, selectedMarket);
   continueRow.hidden = false;
 
   resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
