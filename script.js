@@ -534,7 +534,7 @@ function updateBudgetEstimate() {
   // has no built-in "filled" segment, so this is done with an inline
   // gradient recomputed on every change.
   const fillPct = (budgetTierIndex / (BUDGET_TIERS.length - 1)) * 100;
-  slider.style.background = `linear-gradient(to right, var(--emerald) 0%, var(--emerald) ${fillPct}%, var(--glass-bg-strong) ${fillPct}%, var(--glass-bg-strong) 100%)`;
+  slider.style.background = `linear-gradient(to right, var(--accent) 0%, var(--accent) ${fillPct}%, var(--card-bg-strong) ${fillPct}%, var(--card-bg-strong) 100%)`;
 }
 
 function renderModuleForm() {
