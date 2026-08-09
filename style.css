@@ -612,6 +612,48 @@ section { margin-top: 88px; }
 }
 .continue-btn:hover { background: var(--emerald); color: var(--forest-deep); }
 
+/* Multi-factory comparison */
+.factory-compare-row { margin-top: 12px; }
+.factory-compare-btn {
+  border: 1px solid var(--glass-border); background: var(--glass-bg-strong); color: var(--ink);
+  border-radius: 11px; padding: 10px 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: var(--font-sans);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.factory-compare-btn:hover { border-color: var(--emerald); background: var(--emerald-tint); }
+.factory-compare-panel {
+  margin-top: 18px; padding-top: 18px;
+  border-top: 1px solid var(--glass-border);
+}
+.factory-compare-head h4 { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.factory-compare-disclaimer { font-size: 12px; color: var(--ink-faint); margin-bottom: 16px; }
+.factory-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.factory-card {
+  border: 1px solid var(--glass-border); border-radius: 14px;
+  padding: 16px 18px; background: var(--glass-bg-strong);
+}
+.factory-card-infeasible { border-color: var(--warn); background: var(--warn-tint); }
+.factory-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.factory-card-name-wrap { display: flex; flex-direction: column; gap: 2px; }
+.factory-card-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.factory-card-region { font-size: 12px; color: var(--ink-faint); }
+.factory-status {
+  flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+}
+.factory-status.ok { color: var(--emerald); background: var(--emerald-tint); }
+.factory-status.warn { color: var(--warn); background: var(--warn-tint); }
+.factory-card-metrics { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.factory-card-price { font-size: 17px; font-weight: 700; color: var(--ink); font-family: var(--font-mono); }
+.factory-card-lead { font-size: 12px; color: var(--ink-soft); }
+.factory-card-reason { font-size: 12px; color: var(--warn); margin-bottom: 8px; line-height: 1.5; }
+.factory-card-note { font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
+.factory-card-certs { font-size: 11px; color: var(--ink-faint); }
+
 /* Recent projects */
 .project-grid {
   display: grid;

@@ -140,6 +140,90 @@ const STYLES = [
 let expandedStyles = new Set([STYLES[0].id]);
 
 // ---------------------------------------------------------------------
+// Factory capability profiles — powers "Compare across factories" below.
+//
+// IMPORTANT — read before trusting these numbers: these are declared
+// capability profiles for this demo, NOT live quotes from connected
+// factory accounts. There is no factory-side login/response system built
+// yet — a real "broadcast this spec, get real responses back" flow needs
+// factories to have accounts and actually submit numbers. Until that
+// exists, this is a same-integrity stand-in as BUDGET_TIERS above (a
+// sanity-checked estimate, not a specific quote) — extended across
+// several named profiles instead of one blended rate, so a visitor can
+// see *why* one factory fits and another doesn't, without opening four
+// separate private chats to find out. The UI labels this explicitly
+// (factoryCompareDisclaimer i18n key) so it's never mistaken for a real
+// quote.
+// / 工厂能力画像——"多工厂比价"功能的数据来源。
+//
+// 重要提示：这些是本演示声明的能力画像，不是已接入工厂账号发回的实时报价。
+// 目前还没有工厂端登录/响应系统——真正的"广播这份 spec、收到真实回复"需要
+// 工厂方有账号并且真的提交数字。在这个系统建成之前，这份数据和上面的
+// BUDGET_TIERS 是同一套诚实标准（合理性估算，不是具体报价）——只是从一个
+// 混合费率拆成了几个具名画像，让访客能看出"为什么这家合适、那家不合适"，
+// 不用真的打开四个私聊窗口一个个问。UI 上会明确标注这一点
+// （factoryCompareDisclaimer 这个 i18n key），不会被误认成真实报价。
+// ---------------------------------------------------------------------
+const FACTORIES = [
+  {
+    id: 'fj-modular',
+    name: 'Fujian Modular Works',
+    region: { zh: '中国·福建', en: 'Fujian, China' },
+    rateMultiplier: 1.0,
+    leadTimeDays: [30, 40],
+    maxModules: 6,
+    unsupportedModuleIds: [],
+    certs: ['ISO 9001', 'CE'],
+    note: {
+      zh: '现代/日式产线经验最多，交期最稳定',
+      en: 'Most experience on modern/Japanese-style lines — most predictable lead time',
+    },
+  },
+  {
+    id: 'gd-coastal',
+    name: 'Guangdong Coastal Fab',
+    region: { zh: '中国·广东', en: 'Guangdong, China' },
+    rateMultiplier: 0.92,
+    leadTimeDays: [35, 50],
+    maxModules: 6,
+    unsupportedModuleIds: ['storage-loft'],
+    certs: ['ISO 9001', 'CE'],
+    note: {
+      zh: '热带风格线报价最低，但不支持阁楼储物（斜屋顶）模块',
+      en: 'Lowest rate on tropical-style lines, but no pitched-roof loft-storage support',
+    },
+  },
+  {
+    id: 'js-precision',
+    name: 'Jiangsu Precision Build',
+    region: { zh: '中国·江苏', en: 'Jiangsu, China' },
+    rateMultiplier: 1.15,
+    leadTimeDays: [40, 55],
+    maxModules: 4,
+    unsupportedModuleIds: [],
+    certs: ['ISO 9001', 'CE', 'IAS AC-ES (in progress)'],
+    note: {
+      zh: '单价最高，但认证进度走在最前面；单批次上限只有 4 个模块',
+      en: 'Highest rate, but furthest along on certification; caps at 4 modules per batch',
+    },
+  },
+  {
+    id: 'zj-rapid',
+    name: 'Zhejiang Rapid Assembly',
+    region: { zh: '中国·浙江', en: 'Zhejiang, China' },
+    rateMultiplier: 1.05,
+    leadTimeDays: [22, 32],
+    maxModules: 6,
+    unsupportedModuleIds: [],
+    certs: ['ISO 9001'],
+    note: {
+      zh: '交期最快，但目前还没有 CE 认证',
+      en: 'Fastest lead time, but no CE marking yet',
+    },
+  },
+];
+
+// ---------------------------------------------------------------------
 // i18n
 // ---------------------------------------------------------------------
 const I18N = {
@@ -258,6 +342,15 @@ const I18N = {
     budgetMid: '标准款',
     budgetHigh: '高定款',
     budgetHint: '勾选房间后查看预估预算',
+    factoryCompareBtn: '📋 多工厂比价',
+    factoryCompareTitle: '同一份规格，对照多个工厂',
+    factoryCompareDisclaimer: '这是本演示声明的能力画像，不是已接入工厂账号发回的实时报价。',
+    factoryFeasible: '可生产',
+    factoryNotFeasible: '暂不可行',
+    factoryReasonOverCapacity: '超过该厂单批次 {max} 个模块的上限',
+    factoryReasonUnsupported: '不支持：{modules}',
+    factoryDays: '天',
+    factoryCertsLabel: '认证',
   },
   en: {
     brandName: 'Custom Prefab House',
@@ -374,6 +467,15 @@ const I18N = {
     budgetMid: 'Standard',
     budgetHigh: 'Premium',
     budgetHint: 'Pick some rooms to see an estimate',
+    factoryCompareBtn: '📋 Compare across factories',
+    factoryCompareTitle: 'Same spec, multiple factories',
+    factoryCompareDisclaimer: 'Illustrative capability profiles for this demo — not live quotes from connected factory accounts yet.',
+    factoryFeasible: 'Feasible',
+    factoryNotFeasible: 'Not feasible',
+    factoryReasonOverCapacity: 'Over this factory’s {max}-module-per-batch limit',
+    factoryReasonUnsupported: 'Not supported: {modules}',
+    factoryDays: 'days',
+    factoryCertsLabel: 'Certs',
   },
 };
 
@@ -669,6 +771,87 @@ function buildModuleRequest() {
 }
 
 // ---------------------------------------------------------------------
+// Compare across factories — checks the SAME generated spec against every
+// profile in FACTORIES at once (capacity limit, unsupported modules, and
+// a price/lead-time estimate off that factory's own rate), instead of the
+// visitor manually re-explaining the same requirement in N separate
+// private chats. This is the direct answer to "why keep using the site
+// instead of just moving to chat once you've generated a result" — a
+// private 1:1 thread can't run this comparison, because it isn't a
+// computation, it's a side-by-side across profiles the visitor doesn't
+// individually maintain a relationship with yet.
+// / 多工厂比价——把同一份生成的 spec 同时对照 FACTORIES 里的每个画像
+// （产能上限、不支持的模块、按各自费率算出的价格/交期估算），不用访客
+// 挨个在 N 个私聊窗口里重复解释同一个需求。这是"为什么要留在网站上、
+// 而不是生成完就回到私聊"这个问题的直接答案——私聊做不了这种横向比较，
+// 因为这不是"聊出来的"，是访客还没跟每一家都建立关系之前，就能同时拿到
+// 的多方对比。
+// ---------------------------------------------------------------------
+function compareFactories(requests, finalTotal, areaSqm) {
+  const tier = BUDGET_TIERS[budgetTierIndex];
+  return FACTORIES.map((factory) => {
+    const overCapacity = finalTotal > factory.maxModules;
+    const unsupported = requests
+      .map((r) => r.moduleId)
+      .filter((id) => factory.unsupportedModuleIds.includes(id));
+    const feasible = !overCapacity && unsupported.length === 0;
+    const price = Math.round(areaSqm * tier.ratePerSqm * factory.rateMultiplier);
+    return { factory, feasible, overCapacity, unsupported, price };
+  });
+}
+
+function renderFactoryComparison() {
+  const { requests, finalTotal } = buildModuleRequest();
+  const areaSqm = totalSelectedAreaSqm();
+  const results = compareFactories(requests, finalTotal, areaSqm);
+
+  // Feasible options first, cheapest first within each group — the
+  // comparison is only useful if the visitor doesn't have to hunt for
+  // which rows are actually viable.
+  results.sort((a, b) => {
+    if (a.feasible !== b.feasible) return a.feasible ? -1 : 1;
+    return a.price - b.price;
+  });
+
+  const grid = document.getElementById('factoryCompareResults');
+  grid.innerHTML = '';
+  results.forEach(({ factory, feasible, overCapacity, unsupported, price }) => {
+    const card = document.createElement('div');
+    card.className = 'factory-card' + (feasible ? '' : ' factory-card-infeasible');
+
+    const reasonBits = [];
+    if (overCapacity) {
+      reasonBits.push(t('factoryReasonOverCapacity').replace('{max}', factory.maxModules));
+    }
+    if (unsupported.length) {
+      const names = unsupported
+        .map((id) => t((MODULE_CATALOG.find((m) => m.id === id) || {}).i18nKey || id))
+        .join(currentLang === 'zh' ? '、' : ', ');
+      reasonBits.push(t('factoryReasonUnsupported').replace('{modules}', names));
+    }
+
+    card.innerHTML = `
+      <div class="factory-card-top">
+        <div class="factory-card-name-wrap">
+          <span class="factory-card-name">${factory.name}</span>
+          <span class="factory-card-region">${factory.region[currentLang]}</span>
+        </div>
+        <span class="factory-status ${feasible ? 'ok' : 'warn'}">${feasible ? t('factoryFeasible') : t('factoryNotFeasible')}</span>
+      </div>
+      ${feasible ? `
+        <div class="factory-card-metrics">
+          <span class="factory-card-price">$${price.toLocaleString('en-US')}</span>
+          <span class="factory-card-lead">${factory.leadTimeDays[0]}–${factory.leadTimeDays[1]} ${t('factoryDays')}</span>
+        </div>
+      ` : `<p class="factory-card-reason">${reasonBits.join(' · ')}</p>`}
+      <p class="factory-card-note">${factory.note[currentLang]}</p>
+      <p class="factory-card-certs">${t('factoryCertsLabel')}: ${factory.certs.join(', ')}</p>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ---------------------------------------------------------------------
 // Recent projects (localStorage — this is a static site with no backend)
 // ---------------------------------------------------------------------
 const STORAGE_KEY = 'prefab_recent_projects';
@@ -733,15 +916,25 @@ function handleSubmit() {
   const resultPanel = document.getElementById('resultPanel');
   const resultJson = document.getElementById('resultJson');
   const continueRow = document.getElementById('continueRow');
+  const factoryCompareRow = document.getElementById('factoryCompareRow');
+  const factoryComparePanel = document.getElementById('factoryComparePanel');
 
   resultPanel.hidden = false;
   resultJson.textContent = JSON.stringify(requests, null, 2);
+  // A fresh Generate means the previous comparison (if any) is for a
+  // different spec now — collapse it rather than leave a stale table
+  // sitting under new results. Re-opening re-runs renderFactoryComparison()
+  // against the current spec.
+  factoryComparePanel.hidden = true;
 
   if (!valid) {
     resultJson.textContent += `\n\n// ${t('overLimit')} (${finalTotal} / ${MAX_MODULES})`;
     continueRow.hidden = true;
+    factoryCompareRow.hidden = true;
     return;
   }
+
+  factoryCompareRow.hidden = false;
 
   saveProject({ market: selectedMarket, moduleCount: finalTotal, date: Date.now(), requests });
   renderProjects();
@@ -988,6 +1181,13 @@ document.getElementById('designSavedContactBtn').addEventListener('click', () =>
 document.getElementById('ctaBtn').addEventListener('click', openCustomModal);
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('resultJson').textContent);
+});
+document.getElementById('factoryCompareBtn').addEventListener('click', () => {
+  const panel = document.getElementById('factoryComparePanel');
+  const opening = panel.hidden;
+  if (opening) renderFactoryComparison(); // re-run each time it opens, so a slider move since Generate is reflected
+  panel.hidden = !opening;
+  if (opening) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 document.querySelectorAll('.lang-btn').forEach((btn) => {
   btn.addEventListener('click', () => applyLanguage(btn.getAttribute('data-lang')));

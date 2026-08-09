@@ -152,6 +152,28 @@
           <div id="continueRow" class="continue-row" hidden>
             <a id="continueLink" class="continue-btn" href="#" target="_blank" rel="noopener" data-i18n="continueBtn">Continue building →</a>
           </div>
+
+          <!-- Multi-factory comparison — broadcasts the same generated spec
+               against several factory capability profiles at once, instead
+               of the visitor re-explaining the same requirement to each
+               factory in a separate private chat. See FACTORIES /
+               compareFactories() in script.js for the honesty caveat: these
+               are declared capability profiles for this demo, not live
+               quotes from connected factory accounts.
+               / 多工厂比价——把同一份生成的 spec 同时对照多个工厂的能力画像，
+               不用访客再把同一个需求在每个工厂的私聊里各解释一遍。真实性
+               说明见 script.js 里 FACTORIES / compareFactories() 的注释：
+               这些是本演示声明的能力画像，不是已接入工厂账号的实时报价。 -->
+          <div id="factoryCompareRow" class="factory-compare-row" hidden>
+            <button class="factory-compare-btn" id="factoryCompareBtn" type="button" data-i18n="factoryCompareBtn">📋 Compare across factories</button>
+          </div>
+          <div class="factory-compare-panel" id="factoryComparePanel" hidden>
+            <div class="factory-compare-head">
+              <h4 data-i18n="factoryCompareTitle">Same spec, multiple factories</h4>
+              <p class="factory-compare-disclaimer" data-i18n="factoryCompareDisclaimer">Illustrative capability profiles for this demo — not live quotes from connected factory accounts yet.</p>
+            </div>
+            <div class="factory-compare-grid" id="factoryCompareResults"></div>
+          </div>
         </div>
       </div>
 
