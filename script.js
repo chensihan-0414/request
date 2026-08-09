@@ -20,6 +20,40 @@ function buildStep1Url(modules, marketCode) {
 // one collected from the visitor. See handleInstantGenerate() below.
 const PARSE_REQUEST_URL = `${EDITOR_ORIGIN}/api/parse-request`;
 
+// Persistent draft endpoint (apps/editor/app/api/spec-requests/route.ts).
+// buildStep1Url() above crams the whole module list into the URL — anyone
+// who opens that link re-triggers scene generation and gets their OWN new
+// scene, so a customer and a factory "sharing the same link" never
+// actually land on the same record. buildPersistentStep1Url() instead
+// saves the spec server-side first and returns a short /step1?draftId=<id>
+// link that resolves to that one saved record every time. Falls back to
+// the old data= link on any failure (network error, non-2xx, or the
+// editor's Supabase not being configured yet) so this can never block the
+// core "see my generated house" flow.
+// / 持久化草稿接口。上面的 buildStep1Url() 是把整段模块列表塞进 URL——
+// 谁打开这个链接都会重新触发一次场景生成，各自拿到自己的新场景，"分享
+// 同一个链接"实际上双方看到的不是同一份东西。buildPersistentStep1Url()
+// 会先把这份 spec 存到服务端，再返回一个短链接 /step1?draftId=<id>，
+// 每次打开都指向同一条记录。任何原因失败(网络错误、非 2xx、或者 editor
+// 那边 Supabase 还没配置好)都会退回旧的 data= 链接，保证核心的"看到生成
+// 的房子"流程不会被这一步卡住。
+async function buildPersistentStep1Url(modules, marketCode, furnish = true) {
+  const fallback = buildStep1Url(modules, marketCode);
+  try {
+    const res = await fetch(`${EDITOR_ORIGIN}/api/spec-requests`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ market: marketCode || null, modules, furnish }),
+    });
+    if (!res.ok) return fallback;
+    const saved = await res.json();
+    if (!saved || typeof saved.id !== 'string') return fallback;
+    return `${EDITOR_ORIGIN}/step1?draftId=${encodeURIComponent(saved.id)}`;
+  } catch {
+    return fallback;
+  }
+}
+
 // ---------------------------------------------------------------------
 // Module catalog — mirrors apps/editor/lib/prefab/catalog.ts
 // ---------------------------------------------------------------------
@@ -718,11 +752,23 @@ function handleSubmit() {
   // our own editor.
   const market = MARKETS.find((m) => m.code === selectedMarket);
   const style = market && STYLES.find((s) => s.id === market.styleId);
-  document.getElementById('continueLink').href =
-    style && style.showcaseUrl ? style.showcaseUrl : buildStep1Url(requests, selectedMarket);
+  const usesFixedShowcase = Boolean(style && style.showcaseUrl);
+  document.getElementById('continueLink').href = usesFixedShowcase
+    ? style.showcaseUrl
+    : buildStep1Url(requests, selectedMarket);
   continueRow.hidden = false;
 
   resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  // Upgrade the link to a persistent, shareable one once the server
+  // confirms the draft was saved (see buildPersistentStep1Url() above).
+  // Skipped for the fixed-showcase branch — that link isn't built from
+  // this visitor's own requests, so there's nothing of theirs to save.
+  if (!usesFixedShowcase) {
+    buildPersistentStep1Url(requests, selectedMarket).then((url) => {
+      document.getElementById('continueLink').href = url;
+    });
+  }
 }
 
 // ---------------------------------------------------------------------
@@ -816,7 +862,7 @@ async function handleInstantGenerate() {
       throw new Error(t('instantGenerateEmpty'));
     }
 
-    const url = buildStep1Url(result.modules, selectedMarket);
+    const url = await buildPersistentStep1Url(result.modules, selectedMarket);
     window.open(url, '_blank', 'noopener');
   } catch (err) {
     statusEl.textContent = (err && err.message) || t('instantGenerateError');
