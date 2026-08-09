@@ -39,7 +39,17 @@ body {
   background: var(--forest);
   line-height: 1.65;
   min-height: 100vh;
+  /* Full-bleed section bands (differentiators/process/cta below) use a
+     negative-margin trick to escape main's centered max-width — this
+     guards against any horizontal scrollbar that could introduce.
+     / 下面几个区块用负 margin 技巧做通栏背景，这里防止因此出现横向滚动条。 */
+  overflow-x: hidden;
 }
+
+/* Anchor targets land under the fixed floating header pill without this —
+   every section (and the demo's inner Quick Start anchor) needs it.
+   / 页头是悬浮的，锚点跳转不加这个的话内容会被头部遮住一截。 */
+section, #quickStart { scroll-margin-top: 100px; }
 
 /* Fixed space photo backdrop */
 .bg-layer {
@@ -156,10 +166,14 @@ body {
 .lang-btn.active { background: var(--emerald); color: var(--forest-deep); }
 .lang-btn:not(.active):hover { background: var(--glass-bg-strong); }
 
-/* Hero */
+/* Hero — functional statement + an already-generated result as proof,
+   not an empty input state (see index.html section 1 comment). */
 .hero {
-  text-align: center;
-  padding: 176px 28px 100px;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  align-items: center;
+  gap: 56px;
+  padding: 150px 0 90px;
 }
 .eyebrow {
   font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase;
@@ -167,15 +181,36 @@ body {
 }
 .hero h1 {
   font-family: var(--font-display);
-  font-size: clamp(46px, 6.6vw, 76px);
+  font-size: clamp(32px, 3.4vw, 44px);
   font-weight: 700;
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  margin-bottom: 24px;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
   color: var(--ink);
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.35);
 }
-.subtitle { font-size: 19px; color: var(--ink-soft); max-width: 560px; margin: 0 auto; }
+.hero-cta {
+  display: inline-block;
+  background: var(--emerald); color: var(--forest-deep);
+  border-radius: 12px; padding: 15px 30px;
+  font-size: 15px; font-weight: 700; text-decoration: none;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.hero-cta:hover { background: #3FD684; }
+.hero-visual { position: relative; }
+.hero-visual-img {
+  display: block; width: 100%; height: 340px; object-fit: cover;
+  border-radius: 20px; border: 1px solid var(--glass-border);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+.hero-visual-caption {
+  margin-top: 12px; font-size: 12px; color: var(--ink-faint);
+  text-align: center;
+}
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding: 130px 0 60px; text-align: left; }
+  .hero-visual-img { height: 260px; }
+}
 
 /* Section shared */
 main { max-width: 1220px; margin: 0 auto; padding: 0 44px 130px; }
@@ -579,6 +614,208 @@ section { margin-top: 88px; }
   backdrop-filter: blur(12px);
 }
 
+/* ===================================================================
+   B2B revision — new sections (differentiators, merged demo, process
+   flow, spec sheet, examples/featured-diff, closing CTA). Every section
+   below gets an explicit visual boundary (whitespace + a full-bleed
+   background band or a border) instead of just floating on the shared
+   starfield background — that separation is what was fixing the
+   "cluttered" feel, not a color/font change.
+   / 下面是 B2B 改版新增的区块样式。每个区块都做了明确的视觉边界（通栏背景色块
+   或分隔线），而不是像原来那样都漂在同一张背景图上——分开区块本身就能解决
+   "看起来很乱"的问题，不需要改配色或字体。
+   =================================================================== */
+
+/* Full-bleed band mixin (repeated on .differentiators/.process-section/
+   .cta-section below) — escapes main's centered max-width so these three
+   sections get an edge-to-edge background tint instead of a color block
+   that stops at main's padding. Content inside still lines up with the
+   rest of the page via matching left/right padding.
+   / 下面三个区块（差异化点/流程/结尾CTA）用这个技巧跳出 main 的居中宽度，
+   做真正通栏的背景色块，内部内容的左右留白跟其他区块保持一致。 */
+
+/* 2. Three differentiators */
+.differentiators {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50% + 44px);
+  padding-right: calc(50vw - 50% + 44px);
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+.differentiators .section-head { margin-bottom: 30px; justify-content: center; }
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 1220px;
+  margin: 0 auto;
+}
+.diff-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 26px 24px;
+}
+.diff-card-emphasis { border-color: var(--emerald); background: var(--emerald-tint); }
+.diff-icon { font-size: 26px; display: block; margin-bottom: 14px; }
+.diff-card h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.diff-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
+@media (max-width: 860px) {
+  .diff-grid { grid-template-columns: 1fr; }
+}
+
+/* 3. Interactive demo — Quick Start + Custom Design merged into one
+   visually bounded block (.demo-bound) so they read as one experience. */
+.demo-framing {
+  font-size: 15px; color: var(--emerald); font-weight: 600;
+  margin-bottom: 28px; margin-top: -14px;
+}
+.demo-bound {
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 36px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.demo-sub-heading {
+  font-family: var(--font-display);
+  font-size: 21px; font-weight: 700; color: var(--ink);
+  margin-bottom: 6px;
+}
+.demo-sub-hint { font-size: 13px; color: var(--ink-faint); margin-bottom: 22px; }
+.demo-divider {
+  display: flex; align-items: center; gap: 16px;
+  margin: 40px 0;
+  color: var(--ink-faint); font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.demo-divider::before, .demo-divider::after {
+  content: ""; flex: 1; height: 1px; background: var(--glass-border);
+}
+.market-hint-link {
+  font-size: 13px; color: var(--ink-faint); text-decoration: none;
+  border-bottom: 1px dashed var(--ink-faint);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.market-hint-link:hover { color: var(--emerald); border-color: var(--emerald); }
+@media (max-width: 720px) {
+  .demo-bound { padding: 22px; }
+}
+
+/* 4. How this fits into your process — 4-step horizontal flow, only job
+   is to show WHEN this tool gets opened in a partner's workflow. */
+.process-section {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50% + 44px);
+  padding-right: calc(50vw - 50% + 44px);
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  padding-top: 56px;
+  padding-bottom: 56px;
+}
+.process-section .section-head { justify-content: center; margin-bottom: 36px; }
+.process-flow {
+  display: flex; align-items: center; justify-content: center;
+  gap: 18px; flex-wrap: wrap;
+  max-width: 1000px; margin: 0 auto;
+}
+.process-step {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  text-align: center; width: 150px;
+}
+.process-icon { font-size: 30px; }
+.process-label { font-size: 14px; font-weight: 600; color: var(--ink); }
+.process-arrow { color: var(--emerald); font-size: 20px; flex-shrink: 0; }
+@media (max-width: 720px) {
+  .process-flow { flex-direction: column; }
+  .process-arrow { transform: rotate(90deg); }
+}
+
+/* 5. Spec sheet — deliberately unstyled/flat: no glass blur, no cards,
+   plain text and a hairline border. This is the "hard data" section and
+   should read as visually distinct from the generative sections above. */
+.spec-sheet-section { border-top: 1px solid var(--glass-border); padding-top: 56px; }
+.spec-tabs { display: flex; gap: 6px; margin-bottom: 28px; border-bottom: 1px solid var(--glass-border); }
+.spec-tab {
+  background: none; border: none; cursor: pointer;
+  padding: 12px 18px; font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+  color: var(--ink-faint);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.spec-tab:hover { color: var(--ink-soft); }
+.spec-tab.active { color: var(--emerald); border-bottom-color: var(--emerald); }
+.spec-panel { max-width: 760px; }
+.spec-list { list-style: none; }
+.spec-list li {
+  position: relative; padding-left: 18px; margin-bottom: 14px;
+  font-size: 15px; color: var(--ink-soft); line-height: 1.6;
+}
+.spec-list li::before { content: "—"; position: absolute; left: 0; color: var(--ink-faint); }
+.spec-verified { margin-top: 20px; font-size: 12px; color: var(--ink-faint); font-family: var(--font-mono); }
+
+/* 6. Example outputs (was "Recent projects") */
+.featured-diff {
+  border: 1px solid var(--glass-border); border-radius: 20px;
+  padding: 28px 30px; margin-bottom: 34px;
+  background: var(--glass-bg);
+}
+.featured-diff-label { font-size: 13px; font-weight: 700; color: var(--emerald); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 18px; }
+.featured-diff-grid { display: flex; align-items: stretch; gap: 18px; flex-wrap: wrap; }
+.featured-diff-card {
+  flex: 1; min-width: 220px;
+  border: 1px solid var(--glass-border); border-radius: 14px;
+  padding: 18px 20px; background: var(--glass-bg-strong);
+}
+.featured-diff-card-after { border-color: var(--emerald); background: var(--emerald-tint); }
+.featured-diff-tag { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 10px; }
+.featured-diff-card-after .featured-diff-tag { color: var(--emerald); }
+.featured-diff-spec { font-size: 14px; color: var(--ink); margin-bottom: 14px; }
+.featured-diff-link { font-size: 13px; font-weight: 600; color: var(--emerald); text-decoration: none; }
+.featured-diff-link:hover { text-decoration: underline; }
+.featured-diff-arrow { align-self: center; font-size: 22px; color: var(--emerald); flex-shrink: 0; }
+.featured-diff-note { margin-top: 18px; font-size: 13px; color: var(--ink-faint); }
+@media (max-width: 640px) {
+  .featured-diff-grid { flex-direction: column; }
+  .featured-diff-arrow { transform: rotate(90deg); align-self: flex-start; margin-left: 4px; }
+}
+.examples-runs-label { font-size: 13px; font-weight: 700; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+
+/* 8. Closing CTA — the one conversion moment on the page, gets the
+   strongest visual treatment (full-bleed emerald-tinted band). */
+.cta-section {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50% + 44px);
+  padding-right: calc(50vw - 50% + 44px);
+  text-align: center;
+  background: linear-gradient(180deg, var(--emerald-tint), rgba(47, 191, 113, 0.04));
+  border-top: 1px solid var(--glass-border);
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+.cta-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 36px); font-weight: 700; color: var(--ink);
+  max-width: 720px; margin: 10px auto 14px;
+}
+.cta-body { font-size: 16px; color: var(--ink-soft); max-width: 560px; margin: 0 auto 28px; }
+.cta-btn {
+  background: var(--emerald); color: var(--forest-deep); border: none;
+  border-radius: 12px; padding: 17px 40px; font-size: 16px; font-weight: 700;
+  font-family: var(--font-sans); cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.cta-btn:hover { background: #3FD684; }
+.cta-btn:active { transform: scale(0.98); }
+
 /* Footer */
 .site-footer {
   border-top: 1px solid var(--glass-border);
@@ -602,9 +839,15 @@ section { margin-top: 88px; }
 }
 
 @media (max-width: 560px) {
-  .hero { padding: 140px 22px 76px; }
-  .hero h1 { font-size: 40px; }
+  .hero { padding: 130px 0 60px; }
   .site-header { width: 94%; padding: 10px 16px; }
   main { padding: 0 20px 80px; }
   .section-head h2 { font-size: 26px; }
+  /* Keep the three full-bleed bands' inner gutter matching main's
+     narrower 20px padding at this breakpoint (they default to 44px,
+     main's desktop value). / 让通栏区块的内边距在小屏上跟 main 保持一致。 */
+  .differentiators, .process-section, .cta-section {
+    padding-left: calc(50vw - 50% + 20px);
+    padding-right: calc(50vw - 50% + 20px);
+  }
 }
