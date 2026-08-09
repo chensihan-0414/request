@@ -432,6 +432,20 @@ section { margin-top: 88px; }
 .counter-sep { color: var(--ink-faint); font-weight: 400; }
 .counter-label { font-weight: 400; color: var(--ink-soft); font-size: 13px; margin-left: 4px; }
 .module-counter.over { border-color: var(--warn); color: var(--warn); background: var(--warn-tint); }
+/* Auto-added connector note — wraps onto its own line under the counter
+   (flex-basis:100% forces a break inside the inline-flex row above)
+   whenever buildModuleRequest() silently adds a hallway-connector and/or
+   utility-mechanical module, so the visible count and the over-limit check
+   in script.js always reference the same number.
+   / 自动添加连接模块的提示 — 用 flex-basis:100% 让它单独换到新的一行,
+   在 buildModuleRequest() 自动加入走廊连接/公用管线模块时显示,确保这里
+   看到的数字和 script.js 里判断超限用的数字始终一致。 */
+.counter-auto-note {
+  flex-basis: 100%;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-faint);
+}
 
 /* Budget slider — 3-stop range input (basic / standard / premium),
    snaps rather than free-drags. Recomputes live off the visitor's current

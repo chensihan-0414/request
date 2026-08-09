@@ -209,6 +209,7 @@ const I18N = {
     noProjects: '还没有项目 — 上面生成一个试试',
     selectMarketFirst: '请先选择所在地',
     overLimit: '超过 6 个模块，需要人工评估',
+    autoAddedNote: '含 {n} 个系统自动添加的必需连接模块',
     deleteProject: '删除项目',
     confirmDelete: '确定要删除这个项目吗？',
     bedroomStd: '标准卧室',
@@ -324,6 +325,7 @@ const I18N = {
     noProjects: 'No projects yet — generate one above',
     selectMarketFirst: 'Pick a location first',
     overLimit: 'Over the 6-module limit — needs engineer review',
+    autoAddedNote: 'includes {n} auto-added connector module(s)',
     deleteProject: 'Delete project',
     confirmDelete: 'Delete this project?',
     bedroomStd: 'Standard bedroom',
@@ -489,10 +491,35 @@ function totalModuleCount() {
 }
 
 function updateCounter() {
-  const total = totalModuleCount();
+  // Show the count that actually gets validated (finalTotal), not just the
+  // visitor's manual picks (rawTotal) — buildModuleRequest() silently adds
+  // a utility-mechanical module always, plus a hallway-connector whenever
+  // both a bathroom and an open kitchen are picked. Those used to be
+  // invisible here, so a visitor could see "6/6" and still get an
+  // over-limit rejection because the real total (with auto-adds) was 8.
+  // Showing finalTotal + a note keeps this number in sync with the one
+  // referenced by the over-limit message down in the result panel.
+  // / 这里显示的是真正参与校验的总数(finalTotal),而不是只统计手动勾选
+  // 的数量(rawTotal)——buildModuleRequest() 会自动加一个"公用管线"模块,
+  // 如果同时选了卫浴和开放式厨房还会再加一个"走廊连接"模块,这两个之前
+  // 在这里是看不见的,导致有人明明看到"6/6"却仍然收到超限提示(因为算上
+  // 自动添加的两个,实际是 8)。现在显示 finalTotal 并附一行说明,能和
+  // 下方结果区的超限提示对上号。
+  const { rawTotal, finalTotal } = buildModuleRequest();
   const counterEl = document.getElementById('moduleCount');
-  counterEl.textContent = total;
-  document.querySelector('.module-counter').classList.toggle('over', total > MAX_MODULES);
+  counterEl.textContent = finalTotal;
+  document.querySelector('.module-counter').classList.toggle('over', finalTotal > MAX_MODULES);
+
+  const autoAdded = finalTotal - rawTotal;
+  const noteEl = document.getElementById('counterAutoNote');
+  if (noteEl) {
+    if (autoAdded > 0) {
+      noteEl.textContent = `(${t('autoAddedNote').replace('{n}', autoAdded)})`;
+      noteEl.hidden = false;
+    } else {
+      noteEl.hidden = true;
+    }
+  }
   updateBudgetEstimate();
 }
 
