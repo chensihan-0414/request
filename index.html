@@ -206,10 +206,12 @@
     </div>
   </section>
 
-  <!-- ================= 5. Spec sheet (tabbed, deliberately unstyled) ================= -->
-  <!-- Kept visually flat on purpose — this is the "hard data" section,
-       distinct from the generative/visual sections above it.
-       / 这里故意做得朴素，是"硬数据"区块，跟上面那些生成式/视觉化的区块要有明显区别。 -->
+  <!-- ================= 5. Spec sheet (tabbed, glassmorphism) ================= -->
+  <!-- Same glass-panel language as the rest of the page (see style.css's
+       "Glass panel base" block) — tabs and panels both get the blurred
+       glass treatment rather than staying flat/unstyled.
+       / 跟页面其他区块一样用玻璃拟态效果——标签和内容面板都套用模糊玻璃质感，
+       不再是纯朴素的样式。 -->
   <section class="spec-sheet-section" id="specSheet">
     <div class="section-head">
       <h2 data-i18n="specTitle">Factory spec sheet</h2>
@@ -228,7 +230,7 @@
         <li data-i18n="specDim2">Standard module sizes: 6m / 9m / 12m length options, 3.6m width (~12ft, fits standard US road transport without special permit), 3.0m clear height</li>
         <li data-i18n="specDim3">Stacking: single-story standard; select lines support two-story stacking (pending on-site structural verification)</li>
       </ul>
-      <p class="spec-verified" data-i18n="specVerifiedDim">Last verified: 2026-07-15</p>
+      <p class="spec-verified" data-i18n="specVerifiedDim">Last verified: 2026-08-05</p>
     </div>
 
     <div class="spec-panel" id="spec-certification" data-panel="certification" hidden>
@@ -237,14 +239,14 @@
         <li data-i18n="specCert2">Not yet covered: HUD Code certification; no US state modular insignia (e.g. IAS AC-ES / ICC-ES); seismic design currently per Chinese GB 50011, not yet cross-validated against ASCE 7 (US wind/seismic load standards)</li>
         <li data-i18n="specCert3">Export track record: hospitality/dormitory/senior-living projects to Europe and Southeast Asia; no North American residential delivery record yet</li>
       </ul>
-      <p class="spec-verified" data-i18n="specVerifiedCert">Last verified: 2026-07-15</p>
+      <p class="spec-verified" data-i18n="specVerifiedCert">Last verified: 2026-08-05</p>
     </div>
 
     <div class="spec-panel" id="spec-production" data-panel="production" hidden>
       <ul class="spec-list">
         <li data-i18n="specProd1">Standard batch lead time: 30–45 days depending on order volume</li>
       </ul>
-      <p class="spec-verified" data-i18n="specVerifiedProd">Last verified: 2026-07-15</p>
+      <p class="spec-verified" data-i18n="specVerifiedProd">Last verified: 2026-08-05</p>
     </div>
   </section>
 
@@ -260,13 +262,13 @@
       <div class="featured-diff-grid">
         <div class="featured-diff-card">
           <span class="featured-diff-tag" data-i18n="featuredBeforeTag">BEFORE</span>
-          <p class="featured-diff-spec" data-i18n="featuredBeforeSpec">2 bedrooms · open kitchen · living room · bathroom</p>
+          <p class="featured-diff-spec" data-i18n="featuredBeforeSpec">1 bedroom · open kitchen · living room · bathroom</p>
           <a class="featured-diff-link" id="featuredBeforeLink" href="#" target="_blank" rel="noopener" data-i18n="featuredViewLink">Open result →</a>
         </div>
         <div class="featured-diff-arrow" aria-hidden="true">→</div>
         <div class="featured-diff-card featured-diff-card-after">
-          <span class="featured-diff-tag" data-i18n="featuredAfterTag">AFTER — bedroom count 2 → 3</span>
-          <p class="featured-diff-spec" data-i18n="featuredAfterSpec">3 bedrooms · open kitchen · living room · bathroom</p>
+          <span class="featured-diff-tag" data-i18n="featuredAfterTag">AFTER — bedroom count 1 → 2</span>
+          <p class="featured-diff-spec" data-i18n="featuredAfterSpec">2 bedrooms · open kitchen · living room · bathroom</p>
           <a class="featured-diff-link" id="featuredAfterLink" href="#" target="_blank" rel="noopener" data-i18n="featuredViewLink">Open result →</a>
         </div>
       </div>

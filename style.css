@@ -737,29 +737,51 @@ section { margin-top: 88px; }
   .process-arrow { transform: rotate(90deg); }
 }
 
-/* 5. Spec sheet — deliberately unstyled/flat: no glass blur, no cards,
-   plain text and a hairline border. This is the "hard data" section and
-   should read as visually distinct from the generative sections above. */
+/* 5. Spec sheet — same blurred glass-panel language as the rest of the
+   page (module rows, result panel, project cards) rather than staying
+   flat. Tabs sit in one glass pill bar; the active tab gets an emerald
+   chip; each panel is its own glass card.
+   / 规格表用跟页面其他区块一样的模糊玻璃卡片风格——标签栏是一个玻璃胶囊条，
+   选中的标签用绿色高亮块，每个内容面板本身也是一张玻璃卡片。 */
 .spec-sheet-section { border-top: 1px solid var(--glass-border); padding-top: 56px; }
-.spec-tabs { display: flex; gap: 6px; margin-bottom: 28px; border-bottom: 1px solid var(--glass-border); }
+.spec-tabs {
+  display: inline-flex; gap: 4px; margin-bottom: 24px; padding: 5px;
+  border-radius: 14px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+}
 .spec-tab {
   background: none; border: none; cursor: pointer;
-  padding: 12px 18px; font-family: var(--font-sans); font-size: 14px; font-weight: 600;
-  color: var(--ink-faint);
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  border-radius: 10px;
+  padding: 10px 20px; font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+  color: var(--ink-soft);
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.spec-tab:hover { color: var(--ink-soft); }
-.spec-tab.active { color: var(--emerald); border-bottom-color: var(--emerald); }
-.spec-panel { max-width: 760px; }
+.spec-tab:hover { color: var(--ink); }
+.spec-tab.active { color: var(--forest-deep); background: var(--emerald); }
+.spec-panel {
+  max-width: 760px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  padding: 28px 30px;
+}
 .spec-list { list-style: none; }
 .spec-list li {
   position: relative; padding-left: 18px; margin-bottom: 14px;
   font-size: 15px; color: var(--ink-soft); line-height: 1.6;
 }
-.spec-list li::before { content: "—"; position: absolute; left: 0; color: var(--ink-faint); }
-.spec-verified { margin-top: 20px; font-size: 12px; color: var(--ink-faint); font-family: var(--font-mono); }
+.spec-list li:last-child { margin-bottom: 0; }
+.spec-list li::before { content: "—"; position: absolute; left: 0; color: var(--emerald); }
+.spec-verified {
+  margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--glass-border);
+  font-size: 12px; color: var(--ink-faint); font-family: var(--font-mono);
+}
 
 /* 6. Example outputs (was "Recent projects") */
 .featured-diff {
