@@ -335,6 +335,20 @@
   <div class="modal-card">
     <button class="modal-close" id="customModalClose" type="button" aria-label="Close">&times;</button>
 
+    <!-- Set/shown by openCustomModal(factory) when opened from a factory
+         card's "Get quote" button (see renderFactoryComparison() in
+         script.js) — stays visible across both the form and success states
+         since it lives outside both, so the visitor never loses track of
+         which factory this request is for. Hidden (default) for the other
+         entry points into this same modal (closing CTA, post-save contact
+         button), which aren't tied to one factory.
+         / 从工厂卡片的"获取报价"按钮打开时（见 script.js 的
+         renderFactoryComparison()），由 openCustomModal(factory) 设置并显示。
+         放在表单和成功两个状态外层，切换状态时不会消失，访客始终清楚这次
+         请求对应哪家工厂。其他入口（底部 CTA、设计已保存后的联系按钮）不
+         传工厂，默认隐藏。 -->
+    <p class="modal-factory-context" id="modalFactoryContext" hidden></p>
+
     <div id="customModalForm">
       <h3 data-i18n="modalTitle">One more thing</h3>
       <p class="modal-hint" data-i18n="modalHint">Where should we follow up?</p>

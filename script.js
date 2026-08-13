@@ -351,6 +351,8 @@ const I18N = {
     factoryReasonUnsupported: '不支持：{modules}',
     factoryDays: '天',
     factoryCertsLabel: '认证',
+    factoryQuoteBtn: '获取报价',
+    modalFactoryContext: '正在为「{factory}」申请报价 —— 我们会人工跟进，帮你对接这家工厂的产能与价格，暂时还不是自动发送给工厂的实时报价。',
   },
   en: {
     brandName: 'Custom Prefab House',
@@ -476,11 +478,18 @@ const I18N = {
     factoryReasonUnsupported: 'Not supported: {modules}',
     factoryDays: 'days',
     factoryCertsLabel: 'Certs',
+    factoryQuoteBtn: 'Get quote',
+    modalFactoryContext: "Requesting a quote from {factory} — we'll follow up manually to connect you with their capacity and pricing. This isn't an automated live quote sent to the factory yet.",
   },
 };
 
 let currentLang = 'zh';
 let selectedMarket = null;
+// Set by openCustomModal(factory) when the email-capture modal is opened
+// from a factory card's "Get quote" button, so handleModalSubmit() can tag
+// which factory the visitor asked about. null for every other entry point
+// into this same modal (closing CTA, post-save contact button).
+let quoteFactoryContext = null;
 const moduleState = {}; // moduleId -> quantity (0 or 1 for toggles)
 MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
 
@@ -846,7 +855,24 @@ function renderFactoryComparison() {
       ` : `<p class="factory-card-reason">${reasonBits.join(' · ')}</p>`}
       <p class="factory-card-note">${factory.note[currentLang]}</p>
       <p class="factory-card-certs">${t('factoryCertsLabel')}: ${factory.certs.join(', ')}</p>
+      ${feasible ? `<button type="button" class="factory-quote-btn">${t('factoryQuoteBtn')}</button>` : ''}
     `;
+    // Only feasible factories get a quote action — asking "Not feasible"
+    // Jiangsu Precision Build for a quote makes no sense when the card
+    // itself already says why it can't take this spec. Reuses the existing
+    // email-capture modal (openCustomModal/handleModalSubmit) rather than
+    // sending anything to the factory directly — there's no factory-side
+    // account/response system yet (see the FACTORIES comment above), so
+    // this stays a "we'll follow up manually" request, same honesty level
+    // as everywhere else on the page.
+    // / 只有 Feasible 的工厂才有报价按钮——"Not feasible" 的 Jiangsu Precision
+    // Build 卡片本身已经说明了做不了，没道理让人点"获取报价"。复用现有的
+    // 邮箱收集弹窗（openCustomModal/handleModalSubmit），不会直接把需求发给
+    // 工厂——目前还没有工厂端账号/响应系统（见上面 FACTORIES 的注释），所以
+    // 这里保持"我们人工跟进"的诚实程度，跟页面其他地方一致。
+    if (feasible) {
+      card.querySelector('.factory-quote-btn').addEventListener('click', () => openCustomModal(factory));
+    }
     grid.appendChild(card);
   });
 }
@@ -984,12 +1010,24 @@ function saveCustomRequest(entry) {
   }
 }
 
-function openCustomModal() {
+// factory is optional — pass a FACTORIES entry when opening from a factory
+// card's "Get quote" button (see renderFactoryComparison()) so the modal
+// shows which factory this request is for. Omitted (default null) for the
+// other buttons that reuse this same modal.
+function openCustomModal(factory = null) {
+  quoteFactoryContext = factory;
   document.getElementById('customModalForm').hidden = false;
   document.getElementById('customModalSuccess').hidden = true;
   document.getElementById('modalError').hidden = true;
   document.getElementById('customModalEmail').value = '';
   document.getElementById('customModalAgree').checked = false;
+  const contextEl = document.getElementById('modalFactoryContext');
+  if (factory) {
+    contextEl.textContent = t('modalFactoryContext').replace('{factory}', factory.name);
+    contextEl.hidden = false;
+  } else {
+    contextEl.hidden = true;
+  }
   document.getElementById('customModalOverlay').hidden = false;
 }
 
@@ -1097,6 +1135,8 @@ function handleModalSubmit() {
     email,
     requirement: document.getElementById('customRequestText').value.trim(),
     market: selectedMarket,
+    factoryId: quoteFactoryContext ? quoteFactoryContext.id : null,
+    factoryName: quoteFactoryContext ? quoteFactoryContext.name : null,
     date: Date.now(),
   });
 

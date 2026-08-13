@@ -420,6 +420,15 @@ section { margin-top: 88px; }
   transition: background 0.15s ease;
 }
 .modal-submit-btn:hover { background: #3FD684; }
+.modal-factory-context {
+  font-size: 13px; font-weight: 600; color: var(--emerald);
+  background: var(--emerald-tint);
+  border: 1px solid var(--emerald);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
 
 /* Quick start */
 .module-counter {
@@ -656,6 +665,16 @@ section { margin-top: 88px; }
 .factory-card-reason { font-size: 12px; color: var(--warn); margin-bottom: 8px; line-height: 1.5; }
 .factory-card-note { font-size: 12px; color: var(--ink-soft); line-height: 1.5; margin-bottom: 8px; }
 .factory-card-certs { font-size: 11px; color: var(--ink-faint); }
+.factory-quote-btn {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--emerald); color: var(--forest-deep); border: none;
+  border-radius: 10px; padding: 10px; font-size: 13px; font-weight: 700;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.factory-quote-btn:hover { background: #3FD684; }
 
 /* Recent projects */
 .project-grid {
