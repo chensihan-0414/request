@@ -573,7 +573,10 @@ section { margin-top: 88px; }
   .recommend-btn { width: 100%; }
 }
 
-.submit-row { display: flex; align-items: center; gap: 20px; margin-top: 34px; }
+/* flex-wrap so the button + market label + "select market" link don't get
+   clipped on narrow phone widths — this row previously had no wrap
+   protection at all (the only flex row in this file without one). */
+.submit-row { display: flex; align-items: center; gap: 20px; margin-top: 34px; flex-wrap: wrap; }
 .submit-btn {
   background: var(--emerald); color: var(--forest-deep); border: none;
   border-radius: 12px; padding: 17px 40px; font-size: 17px; font-weight: 700;
