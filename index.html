@@ -148,7 +148,23 @@
             <h3 data-i18n="resultLabel">Result</h3>
             <button class="copy-btn" id="copyBtn" type="button" data-i18n="copyBtn">Copy JSON</button>
           </div>
-          <pre id="resultJson"></pre>
+
+          <!-- Plain-language version of the generated spec — a cold visitor
+               (no verbal walkthrough) landing straight on
+               {"moduleId": "bedroom-master", "quantity": 1} has no way to
+               tell if that's actually what they asked for. This renders the
+               same data as room names they recognize; the raw JSON below is
+               collapsed by default behind resultRawToggle, still there for
+               anyone who wants to forward it to an engineering/procurement
+               system. See renderResultSummary() in script.js.
+               / 生成结果的人话版本——如果没人在旁边讲解，访客直接看到
+               {"moduleId": "bedroom-master", "quantity": 1} 根本判断不出这是不是
+               自己要的东西。这里把同一份数据换成看得懂的房间名称；下面的原始
+               JSON 默认收起在 resultRawToggle 后面，留给需要转发给工程/采购
+               系统的人用。见 script.js 的 renderResultSummary()。 -->
+          <div class="result-summary" id="resultSummary"></div>
+          <button type="button" class="result-raw-toggle" id="resultRawToggle" data-i18n="viewRawJsonBtn">View raw data (JSON)</button>
+          <pre id="resultJson" hidden></pre>
           <div id="continueRow" class="continue-row" hidden>
             <a id="continueLink" class="continue-btn" href="#" target="_blank" rel="noopener" data-i18n="continueBtn">Continue building →</a>
           </div>

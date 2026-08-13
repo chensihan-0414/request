@@ -321,6 +321,10 @@ const I18N = {
     generateBtn: '生成方案',
     resultLabel: '生成结果',
     copyBtn: '复制 JSON',
+    resultSummaryAreaLabel: '总占地面积',
+    resultSummaryEstimateLabel: '预估造价',
+    viewRawJsonBtn: '查看原始数据 (JSON) ▾',
+    hideRawJsonBtn: '收起原始数据 ▴',
     continueBtn: '继续搭建 →',
     footerNote: '生成结果仅供方案预览，具体尺寸以工厂确认为准。',
     recommended: '推荐',
@@ -448,6 +452,10 @@ const I18N = {
     generateBtn: 'Generate',
     resultLabel: 'Result',
     copyBtn: 'Copy JSON',
+    resultSummaryAreaLabel: 'Total footprint',
+    resultSummaryEstimateLabel: 'Estimated cost',
+    viewRawJsonBtn: 'View raw data (JSON) ▾',
+    hideRawJsonBtn: 'Hide raw data ▴',
     continueBtn: 'Continue building →',
     footerNote: 'Generated results are a preview only — final dimensions pending factory confirmation.',
     recommended: 'Recommended',
@@ -930,6 +938,52 @@ function renderProjects() {
 }
 
 // ---------------------------------------------------------------------
+// Result summary — human-readable version of the generated spec, shown
+// above the raw JSON. A visitor evaluating this site cold (no verbal
+// walkthrough) sees {"moduleId": "bedroom-master", "quantity": 1} and has
+// no way to tell if that's actually what they asked for — this renders
+// the same data as plain room names instead, with the raw JSON demoted to
+// a collapsed "view raw data" toggle for anyone who wants to forward it to
+// an engineering/procurement system. Modules not in MODULE_CATALOG
+// (hallway-connector, utility-mechanical) are system-added, not something
+// the visitor picked — folded into one count line instead of listed as
+// rooms, reusing the same autoAddedNote wording already shown in the
+// module counter above, so the two stay consistent.
+// / 结果摘要——生成结果的人话版本，显示在原始 JSON 之上。一个没人在旁边讲解、
+// 第一次看这个网站的访客，看到 {"moduleId": "bedroom-master", "quantity": 1}
+// 根本判断不出这是不是自己要的东西——这里把同一份数据换成看得懂的房间名称，
+// 原始 JSON 收进一个默认收起的"查看原始数据"里，留给需要转发给工程/采购系统
+// 的人用。不在 MODULE_CATALOG 里的模块（hallway-connector、utility-mechanical）
+// 是系统自动添加的，不是访客自己选的——合并成一行数量说明，而不是当成房间列出
+// 来，措辞复用上面模块计数器已经用过的 autoAddedNote，保持两处一致。
+// ---------------------------------------------------------------------
+function renderResultSummary(requests, areaSqm) {
+  const summaryEl = document.getElementById('resultSummary');
+  const tier = BUDGET_TIERS[budgetTierIndex];
+
+  const pickedLines = [];
+  let autoAddedCount = 0;
+  requests.forEach((r) => {
+    const spec = MODULE_CATALOG.find((m) => m.id === r.moduleId);
+    if (spec) {
+      pickedLines.push(`<li>${r.quantity} × ${t(spec.i18nKey)} <span class="result-summary-sub">(${spec.sub})</span></li>`);
+    } else {
+      autoAddedCount += r.quantity;
+    }
+  });
+
+  let html = `<ul class="result-summary-list">${pickedLines.join('')}</ul>`;
+  if (areaSqm > 0) {
+    const estimate = Math.round(areaSqm * tier.ratePerSqm);
+    html += `<p class="result-summary-total"><span>${t('resultSummaryAreaLabel')}: ${areaSqm}m²</span><span>${t('resultSummaryEstimateLabel')}: $${estimate.toLocaleString('en-US')}</span></p>`;
+  }
+  if (autoAddedCount > 0) {
+    html += `<p class="result-summary-auto">${t('autoAddedNote').replace('{n}', autoAddedCount)}</p>`;
+  }
+  summaryEl.innerHTML = html;
+}
+
+// ---------------------------------------------------------------------
 // Submit
 // ---------------------------------------------------------------------
 function handleSubmit() {
@@ -941,6 +995,8 @@ function handleSubmit() {
 
   const resultPanel = document.getElementById('resultPanel');
   const resultJson = document.getElementById('resultJson');
+  const resultSummary = document.getElementById('resultSummary');
+  const resultRawToggle = document.getElementById('resultRawToggle');
   const continueRow = document.getElementById('continueRow');
   const factoryCompareRow = document.getElementById('factoryCompareRow');
   const factoryComparePanel = document.getElementById('factoryComparePanel');
@@ -954,11 +1010,22 @@ function handleSubmit() {
   factoryComparePanel.hidden = true;
 
   if (!valid) {
+    // Over-limit is an error state, not a normal result — there's nothing
+    // sensible to summarize in plain language, so skip renderResultSummary()
+    // and show the raw detail (with the warning appended) directly instead
+    // of leaving it collapsed behind the toggle.
     resultJson.textContent += `\n\n// ${t('overLimit')} (${finalTotal} / ${MAX_MODULES})`;
+    resultJson.hidden = false;
+    resultSummary.innerHTML = '';
     continueRow.hidden = true;
     factoryCompareRow.hidden = true;
     return;
   }
+
+  // Collapsed by default — see renderResultSummary() above for why.
+  resultJson.hidden = true;
+  resultRawToggle.textContent = t('viewRawJsonBtn');
+  renderResultSummary(requests, totalSelectedAreaSqm());
 
   factoryCompareRow.hidden = false;
 
@@ -1221,6 +1288,12 @@ document.getElementById('designSavedContactBtn').addEventListener('click', () =>
 document.getElementById('ctaBtn').addEventListener('click', openCustomModal);
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(document.getElementById('resultJson').textContent);
+});
+document.getElementById('resultRawToggle').addEventListener('click', () => {
+  const pre = document.getElementById('resultJson');
+  const btn = document.getElementById('resultRawToggle');
+  pre.hidden = !pre.hidden;
+  btn.textContent = pre.hidden ? t('viewRawJsonBtn') : t('hideRawJsonBtn');
 });
 document.getElementById('factoryCompareBtn').addEventListener('click', () => {
   const panel = document.getElementById('factoryComparePanel');
