@@ -20,6 +20,54 @@ function buildStep1Url(modules, marketCode) {
 // one collected from the visitor. See handleInstantGenerate() below.
 const PARSE_REQUEST_URL = `${EDITOR_ORIGIN}/api/parse-request`;
 
+// n8n "Factory RFQ Broadcast" workflow's webhook (Quote Request Submitted
+// node) — fired when a visitor submits the email-capture modal opened from
+// a factory card's "Get quote" button (see openCustomModal(factory) /
+// handleModalSubmit() below). Left BLANK on purpose: paste in the
+// workflow's PRODUCTION webhook URL from n8n once it's ready to go live —
+// not the "Test URL" shown while the canvas is open and listening, which
+// only fires once and stops working the moment you close that panel. The
+// webhook node also needs CORS enabled for this site's origin (n8n's
+// webhook node has an "Allowed Origins (CORS)" field — without it the
+// browser blocks the request silently). sendFactoryRfq() below no-ops
+// whenever this is empty, so leaving it blank never breaks the modal —
+// the visitor's email is still captured locally either way.
+// / n8n "Factory RFQ Broadcast" 工作流的 webhook 地址（Quote Request
+// Submitted 节点）——访客在工厂卡片点"Get quote"打开邮箱收集弹窗并提交时
+// 触发（见下面 openCustomModal(factory) / handleModalSubmit()）。故意留空：
+// 等这个工作流准备好正式上线，把 n8n 里的 PRODUCTION webhook URL 填进来——
+// 不是画布打开、处于监听状态时显示的那个 "Test URL"，那个只能触发一次，
+// 关掉面板就失效。webhook 节点还需要给这个网站的域名开 CORS（n8n webhook
+// 节点有个 "Allowed Origins (CORS)" 字段——不设置的话浏览器会静默拦截这个
+// 请求）。下面 sendFactoryRfq() 在这里留空的情况下什么都不做，所以留空
+// 不会导致弹窗坏掉——访客的邮箱依然会正常保存在本地。
+const FACTORY_RFQ_WEBHOOK_URL = 'https://sihanchen.app.n8n.cloud/webhook/factory-rfq-broadcast';
+
+// Fires the n8n RFQ broadcast for the factory the visitor requested a
+// quote from. Best-effort and silent on failure — same fallback pattern as
+// buildPersistentStep1Url() above: this is a bonus real action layered on
+// top of the modal, never something the visitor's "Submitted" screen
+// should be blocked on or fail because of.
+async function sendFactoryRfq(factory, requests) {
+  if (!FACTORY_RFQ_WEBHOOK_URL || !factory || !requests) return;
+  try {
+    await fetch(FACTORY_RFQ_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        modules: requests,
+        market: selectedMarket || null,
+        selectedFactoryIds: [factory.id],
+      }),
+    });
+  } catch {
+    // Network error, CORS misconfiguration, workflow not active, etc. —
+    // the visitor already sees a successful "Submitted" screen from the
+    // local save; this is a secondary real-world side effect, not the
+    // thing the UI's success state depends on.
+  }
+}
+
 // Persistent draft endpoint (apps/editor/app/api/spec-requests/route.ts).
 // buildStep1Url() above crams the whole module list into the URL — anyone
 // who opens that link re-triggers scene generation and gets their OWN new
@@ -498,6 +546,11 @@ let selectedMarket = null;
 // which factory the visitor asked about. null for every other entry point
 // into this same modal (closing CTA, post-save contact button).
 let quoteFactoryContext = null;
+// The most recently generated, valid module list — set at the end of
+// handleSubmit() below. sendFactoryRfq() needs this: by the time a visitor
+// clicks "Get quote" on a factory card, Generate has already run, but
+// nothing else keeps that spec around at module scope for the RFQ payload.
+let lastGeneratedRequests = null;
 const moduleState = {}; // moduleId -> quantity (0 or 1 for toggles)
 MODULE_CATALOG.forEach((m) => { moduleState[m.id] = 0; });
 
@@ -1026,6 +1079,7 @@ function handleSubmit() {
   resultJson.hidden = true;
   resultRawToggle.textContent = t('viewRawJsonBtn');
   renderResultSummary(requests, totalSelectedAreaSqm());
+  lastGeneratedRequests = requests;
 
   factoryCompareRow.hidden = false;
 
@@ -1206,6 +1260,13 @@ function handleModalSubmit() {
     factoryName: quoteFactoryContext ? quoteFactoryContext.name : null,
     date: Date.now(),
   });
+
+  // Real side effect, layered on top of the local save above — see
+  // sendFactoryRfq()'s comment near FACTORY_RFQ_WEBHOOK_URL. No-ops until
+  // that URL is filled in, so this is safe to leave wired up right now.
+  if (quoteFactoryContext) {
+    sendFactoryRfq(quoteFactoryContext, lastGeneratedRequests);
+  }
 
   document.getElementById('customModalForm').hidden = true;
   document.getElementById('customModalSuccess').hidden = false;
